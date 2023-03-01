@@ -14,9 +14,22 @@ function login() {
     return false;
   }
 
-  //通过虚拟表单的形式提交post请求，从而实现页面的跳转
-  var url = "http://localhost:8080/user/regist";
 
-  $.post(url, {"userAccount":"1235645", "userPassword":"56556"});
+  var settings = {
+    "url": "http://localhost:8080/user/regist",
+    "method": "POST",
+    "timeout": 0,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "data": JSON.stringify({
+      "userAccount": Account,
+      "userPassword": Password,
+    }),
+  };
+
+  $.ajax(settings).done(function (response) {
+    console.log(response);
+  });
 
 }
