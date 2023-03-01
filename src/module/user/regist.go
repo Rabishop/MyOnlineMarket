@@ -4,16 +4,16 @@ import (
 	"example.com/m/v2/model"
 )
 
-// UserGetResponse struct
+// UserRegistResponse struct
 type UserRegistResponse struct {
 	Status string `json:"status"`
 }
 
-// UserCreateRequest struct
+// UserRegistRequest struct
 type UserRegistRequest struct {
-	UserAccount  string `json:"user_account"`
-	UserPassword string `json:"user_password"`
-	UserName     string `json:"user_name"`
+	UserAccount  string `json:"userAccount"`
+	UserPassword string `json:"userPassword"`
+	UserName     string `json:"userName"`
 }
 
 func Regist(userRegistRequest *UserRegistRequest) error {
@@ -24,7 +24,7 @@ func Regist(userRegistRequest *UserRegistRequest) error {
 	// start transcation
 	tx := DB.Begin()
 
-	user := new(model.User)
+	var user model.User
 	user.UserName = userRegistRequest.UserName
 	user.UserAccount = userRegistRequest.UserAccount
 	user.UserPassword = userRegistRequest.UserPassword

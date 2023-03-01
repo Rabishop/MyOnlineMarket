@@ -13,39 +13,83 @@ import (
 // UserRegist API
 func UserRegistHandler(w http.ResponseWriter, r *http.Request) {
 
+	var userRegistRequest user.UserRegistRequest
+	var userRegistResponse user.UserRegistResponse
+	userRegistResponse.Status = "Accepted"
+
 	// Check Method
 	if r.Method != "POST" {
-		jsonbyte, err := json.Marshal(user.UserRegistResponse{"Wrong Method"})
-		if err != nil {
-			fmt.Println("Marshal failed")
-		}
-		fmt.Fprintln(w, string(jsonbyte))
+		userRegistResponse.Status = "Wrong Method"
+		fmt.Println(userRegistResponse.Status)
 	}
 
 	// Read Body
-	var userRegistRequest user.UserRegistRequest
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Println(err)
+		return
 	}
 	json.Unmarshal([]byte(body), &userRegistRequest)
+	fmt.Println(userRegistRequest.UserAccount)
 
 	// Call Function
-	user.Regist(&userRegistRequest)
-
-	// jsonbyte, err := json.Marshal(UserRegistResponse{"Accepted"})
-	// if err != nil {
-	// 	fmt.Println("Marshal failed")
-	// }
+	err = user.Regist(&userRegistRequest)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
 	// Return JSON
+	jsonbyte, err := json.Marshal(userRegistResponse)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	fmt.Fprintln(w, string(jsonbyte))
+}
+
+// UserLogin API
+func UserLoginHandler(w http.ResponseWriter, r *http.Request) {
+
+	var userLoginRequest user.UserLoginRequest
+	var userLoginResponse user.UserLoginResponse
+	userLoginResponse.Status = "Accepted"
+
+	// Check Method
+	if r.Method != "POST" {
+		userLoginResponse.Status = "Wrong Method"
+		fmt.Println(userLoginResponse.Status)
+	}
+
+	// Read Body
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	json.Unmarshal([]byte(body), &userLoginRequest)
+
+	// Call Function
+	err = user.Login(&userLoginRequest)
+	if err != nil {
+		log.Println(err)
+		userLoginResponse.Status = "Password Error or Account Not Found"
+	}
+
+	// Return JSON
+	jsonbyte, err := json.Marshal(userLoginResponse)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 	fmt.Fprintln(w, string(jsonbyte))
 }
 
 func main() {
 
-	// ユーザ所持キャラクター一覧取得API
-	http.HandleFunc("/character/list", UserRegistHandler)
+	http.HandleFunc("/user/regist", UserRegistHandler)
+
+	http.HandleFunc("/user/login", UserLoginHandler)
 
 	http.ListenAndServe(":8080", nil)
 }
