@@ -17,10 +17,16 @@ func UserRegistHandler(w http.ResponseWriter, r *http.Request) {
 	var userRegistResponse user.UserRegistResponse
 	userRegistResponse.Status = "Accepted"
 
+	// Allow CORS
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("content-type", "application/json")
+
 	// Check Method
 	if r.Method != "POST" {
 		userRegistResponse.Status = "Wrong Method"
 		fmt.Println(userRegistResponse.Status)
+		fmt.Println(r.Method)
 	}
 
 	// Read Body
@@ -30,7 +36,7 @@ func UserRegistHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	json.Unmarshal([]byte(body), &userRegistRequest)
-	fmt.Println(userRegistRequest.UserAccount)
+	fmt.Println(r.Body)
 
 	// Call Function
 	err = user.Regist(&userRegistRequest)
@@ -54,6 +60,11 @@ func UserLoginHandler(w http.ResponseWriter, r *http.Request) {
 	var userLoginRequest user.UserLoginRequest
 	var userLoginResponse user.UserLoginResponse
 	userLoginResponse.Status = "Accepted"
+
+	// Allow CORS
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("content-type", "application/json")
 
 	// Check Method
 	if r.Method != "POST" {
