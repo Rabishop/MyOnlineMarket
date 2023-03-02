@@ -1,6 +1,11 @@
 package user
 
 import (
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+
 	"example.com/m/v2/model"
 )
 
@@ -29,11 +34,20 @@ func Regist(userRegistRequest *UserRegistRequest) error {
 	user.UserAccount = userRegistRequest.UserAccount
 	user.UserPassword = userRegistRequest.UserPassword
 
-	if err := tx.Debug().Create(&user).Error; err != nil {
+	if err := tx.Create(&user).Error; err != nil {
 		tx.Rollback()
 		return err
 	}
 
 	tx.Commit()
 	return tx.Error
+}
+
+func RegistOutput(w http.ResponseWriter, userRegistResponse *UserRegistResponse) {
+	jsonbyte, err := json.Marshal(userRegistResponse)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	fmt.Fprintln(w, string(jsonbyte))
 }

@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
   <head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
       rel="stylesheet" />
 
     <title>OnlineMarket</title>
@@ -20,9 +18,7 @@
     <link rel="stylesheet" href="assets/css/templatemo-cyborg-gaming.css" />
     <link rel="stylesheet" href="assets/css/owl.css" />
     <link rel="stylesheet" href="assets/css/animate.css" />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
     <!--
 
 TemplateMo 579 Cyborg Gaming
@@ -60,11 +56,7 @@ https://templatemo.com/tm-579-cyborg-gaming
               <!-- ***** Search End ***** -->
               <div class="search-input">
                 <form id="search" action="#">
-                  <input
-                    type="text"
-                    placeholder="Type Something"
-                    id="searchText"
-                    name="searchKeyword"
+                  <input type="text" placeholder="Type Something" id="searchText" name="searchKeyword"
                     onkeypress="handle" />
                   <i class="fa fa-search"></i>
                 </form>
@@ -75,9 +67,8 @@ https://templatemo.com/tm-579-cyborg-gaming
                 <li><a href="index.html">Home</a></li>
                 <li><a href="cart.html">Cart</a></li>
                 <li>
-                  <a href="profile.html" class="active"
-                    >Profile <img src="assets/images/profile-header.jpg" alt=""
-                  /></a>
+                  <a href="profile.html" class="active">Profile <img src="assets/images/profile-header.jpg"
+                      alt="" /></a>
                 </li>
               </ul>
               <a class="menu-trigger">
@@ -101,46 +92,37 @@ https://templatemo.com/tm-579-cyborg-gaming
                 <div class="main-profile">
                   <div class="row">
                     <div class="col-lg-4">
-                      <img
-                        src="assets/images/profile.jpg"
-                        alt=""
-                        style="border-radius: 23px" />
+                      <img src="assets/images/profile.jpg" alt="" style="border-radius: 23px" />
                     </div>
                     <div class="col-lg-8 align-self-center">
                       <div class="main-info">
                         <h4>OnlineMarket</h4>
-                        <form id="login" name="" action="#">
+                        <form id="registTable" name="" action="#">
                           <div class="col-lg-8 align-self-center">
                             <ul>
                               <li>
                                 Your Account
-                                <input
-                                  style="float: right"
-                                  type="text"
-                                  name="loginAccount"
-                                  placeholder="Your Account"
-                                  onkeypress="handle" />
+                                <input style="float: right" type="text" name="registAccount"
+                                  placeholder="Your Account" />
                               </li>
                               <li>
                                 Password
-                                <input
-                                  style="float: right"
-                                  type="text"
-                                  name="loginPassword"
-                                  placeholder="Password"
-                                  onkeypress="handle" />
+                                <input style="float: right" type="password" name="registPassword"
+                                  placeholder="Password" />
+                              </li>
+                              <li>
+                                User name
+                                <input style="float: right" type="text" name="registName" placeholder="User name" />
                               </li>
                             </ul>
                           </div>
-                          <p
-                            id="loginError"
-                            style="
+                          <p id="loginError" style="
                               color: red;
                               height: 20px;
                               text-align: center;
                             "></p>
-                          <div class="main-border-button">
-                            <a href="#" onclick="login()">Log in</a>
+                          <div class="col-lg-8 main-border-button">
+                            <a href="#" onclick="regist()" style="float: right;">Sign up</a>
                           </div>
                         </form>
                       </div>
@@ -167,6 +149,7 @@ https://templatemo.com/tm-579-cyborg-gaming
     <script src="assets/js/custom.js"></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="assets/js/login.js"></script>
+    <script src="assets/js/user.js"></script>
   </body>
+
 </html>

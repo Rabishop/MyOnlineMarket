@@ -1,6 +1,11 @@
 package user
 
 import (
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+
 	"example.com/m/v2/model"
 )
 
@@ -34,4 +39,13 @@ func Login(userLoginRequest *UserLoginRequest) error {
 
 	tx.Commit()
 	return tx.Error
+}
+
+func LoginOutput(w http.ResponseWriter, userLoginResponse *UserLoginResponse) {
+	jsonbyte, err := json.Marshal(userLoginResponse)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	fmt.Fprintln(w, string(jsonbyte))
 }
