@@ -1,0 +1,52 @@
+<html>
+
+	<head></head>
+	<style>
+		* {
+			padding: 0;
+			margin: 0 atuo;
+		}
+
+		.left {
+			width: 380px;
+			height: 380px;
+			border: 2px #cccccc;
+			background: #efefef;
+			align-self: center;
+			align-content: center;
+			text-align: center;
+		}
+	</style>
+
+	<body>
+		<div class="left">
+			<form method="get" enctype="multipart/form-data">
+				<label for="inputFile">
+					<img id="imgDiv1" src="./subpicture.png" />
+				</label>
+				<input type="file" id="inputFile" style="display: none; ">
+			</form>
+		</div>
+
+		<div id="imgDiv"></div>
+
+
+		<script>
+			file.addEventListener("change", function (event) {
+				var file = document.getElementById("inputFile");
+				let imgDiv = document.getElementById("imgDiv");
+				let reader = new FileReader();
+				var file1 = file.files[0]
+				reader.readAsDataURL(file1);
+				reader.onload = function (result) {
+
+					imgDiv.innerHTML = '<img src="' + reader.result + '" alt=""/>'
+					// imgDiv.innerHTML = '<img src="' + reader.result + '" alt=""/>'
+					console.log(reader.result)
+				}
+				console.log(file.files)
+			})
+		</script>
+	</body>
+
+</html>

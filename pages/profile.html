@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
   <head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
       rel="stylesheet" />
 
     <title>OnlineMarket</title>
@@ -20,9 +18,7 @@
     <link rel="stylesheet" href="assets/css/templatemo-cyborg-gaming.css" />
     <link rel="stylesheet" href="assets/css/owl.css" />
     <link rel="stylesheet" href="assets/css/animate.css" />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
     <!--
 
 TemplateMo 579 Cyborg Gaming
@@ -32,7 +28,7 @@ https://templatemo.com/tm-579-cyborg-gaming
 -->
   </head>
 
-  <body>
+  <body onload="profileload()">
     <!-- ***** Preloader Start ***** -->
     <div id="js-preloader" class="js-preloader">
       <div class="preloader-inner">
@@ -60,11 +56,7 @@ https://templatemo.com/tm-579-cyborg-gaming
               <!-- ***** Search End ***** -->
               <div class="search-input">
                 <form id="search" action="#">
-                  <input
-                    type="text"
-                    placeholder="Type Something"
-                    id="searchText"
-                    name="searchKeyword"
+                  <input type="text" placeholder="Type Something" id="searchText" name="searchKeyword"
                     onkeypress="handle" />
                   <i class="fa fa-search"></i>
                 </form>
@@ -75,9 +67,8 @@ https://templatemo.com/tm-579-cyborg-gaming
                 <li><a href="index.html">Home</a></li>
                 <li><a href="cart.html">Cart</a></li>
                 <li>
-                  <a href="profile.html" class="active"
-                    >Profile <img src="assets/images/profile-header.jpg" alt=""
-                  /></a>
+                  <a href="profile.html" class="active">Profile <img src="assets/images/profile-header.jpg"
+                      alt="" /></a>
                 </li>
               </ul>
               <a class="menu-trigger">
@@ -100,28 +91,30 @@ https://templatemo.com/tm-579-cyborg-gaming
               <div class="col-lg-12">
                 <div class="main-profile">
                   <div class="row">
-                    <div class="col-lg-4">
-                      <img
-                        src="assets/images/profile.jpg"
-                        alt=""
-                        style="border-radius: 23px" />
+                    <div class="col-lg-4 align-content-center">
+                      <form method="get" enctype="multipart/form-data">
+                        <label for="inputFile">
+                          <img id="userPortrait" src="assets/images/subpicture.png" />
+                        </label>
+                        <input type="file" id="inputFile" style="display: none; ">
+                      </form>
                     </div>
                     <div class="col-lg-4 align-self-center">
                       <div class="main-info header-text">
                         <span>Online</span>
-                        <h4>Alan Smithee</h4>
+                        <h4 id="userName"></h4>
                         <p>No information was provided.</p>
                         <div class="main-border-button">
-                          <a href="login.html">Log out</a>
+                          <a href="login.html" onclick="logout()">Log out</a>
                         </div>
                       </div>
                     </div>
                     <div class="col-lg-4 align-self-center">
                       <ul>
-                        <li>Games <span>144</span></li>
-                        <li>Achievement <span>2113</span></li>
-                        <li>Friends Online <span>16</span></li>
-                        <li>Perfectly Achieved <span>4</span></li>
+                        <li>Games <span id="userGameCount">0</span></li>
+                        <li>Achievement <span>0</span></li>
+                        <li>Friends Online <span>0</span></li>
+                        <li>Perfectly Achieved <span>0</span></li>
                       </ul>
                     </div>
                   </div>
@@ -139,10 +132,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                 <div class="item">
                   <ul>
                     <li>
-                      <img
-                        src="assets/images/game-01.jpg"
-                        alt=""
-                        class="templatemo-item" />
+                      <img src="assets/images/game-01.jpg" alt="" class="templatemo-item" />
                     </li>
                     <li>
                       <h4>Dota 2</h4>
@@ -170,10 +160,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                 <div class="item">
                   <ul>
                     <li>
-                      <img
-                        src="assets/images/game-02.jpg"
-                        alt=""
-                        class="templatemo-item" />
+                      <img src="assets/images/game-02.jpg" alt="" class="templatemo-item" />
                     </li>
                     <li>
                       <h4>Fortnite</h4>
@@ -201,10 +188,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                 <div class="item last-item">
                   <ul>
                     <li>
-                      <img
-                        src="assets/images/game-03.jpg"
-                        alt=""
-                        class="templatemo-item" />
+                      <img src="assets/images/game-03.jpg" alt="" class="templatemo-item" />
                     </li>
                     <li>
                       <h4>CS-GO</h4>
@@ -247,5 +231,45 @@ https://templatemo.com/tm-579-cyborg-gaming
     <script src="assets/js/tabs.js"></script>
     <script src="assets/js/popup.js"></script>
     <script src="assets/js/custom.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="assets/js/user.js"></script>
+
+
+    <script>
+      var file = document.getElementById("inputFile");
+      let imgDiv = document.getElementById("imgDiv");
+      file.addEventListener("change", function (event) {
+        let reader = new FileReader();
+        var file1 = file.files[0]
+        reader.readAsDataURL(file1);
+        reader.onload = function (result) {
+          console.log(reader.result)
+
+          var settings = {
+            "url": "http://localhost:8080/user/uploadPortrait",
+            "method": "POST",
+            "timeout": 0,
+            "headers": {
+              "Content-Type": "application/json"
+            },
+            "data": JSON.stringify({
+              "userPortrait": reader.result,
+            }),
+          };
+
+          $.ajax(settings).done(function (response) {
+            if (response["status"] == "Accepted") {
+              alert("Success!");
+            } else {
+              alert("Fail!");
+            }
+            console.log(response);
+          });
+
+        }
+      })
+    </script>
   </body>
+
 </html>
