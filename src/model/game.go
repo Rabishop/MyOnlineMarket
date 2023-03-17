@@ -1,10 +1,13 @@
 package model
 
 type Game struct {
-	UserId       int64  `gorm:"column:user_id;AUTO_INCREMENT;" json:"userId"`
-	UserAccount  string `gorm:"column:user_account;" json:"userAccount"`
-	UserPassword string `gorm:"column:user_password;" json:"userPassword"`
-	UserName     string `gorm:"column:user_name;" json:"userName"`
+	GameId    int64  `gorm:"column:game_id;AUTO_INCREMENT;" json:"gameId"`
+	GameStar  int64  `gorm:"column:game_star;" json:"gameStar"`
+	GamePrice int64  `gorm:"column:game_price;" json:"gamePrice"`
+	GameName  string `gorm:"column:game_name;" json:"gameName"`
+	GameType  string `gorm:"column:game_type;" json:"gameType"`
+	GameInfo  string `gorm:"column:game_info;" json:"gameInfo"`
+	GameImg   string `gorm:"column:game_img;" json:"gameImg"`
 }
 
 // Return TableName
