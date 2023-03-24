@@ -1,6 +1,8 @@
 function uploadGame() {
     var gameName = document.forms["uploadGameTable"]["gameName"].value;
     var gamePrice = document.forms["uploadGameTable"]["gamePrice"].value;
+    var gameInfo = document.forms["uploadGameTable"]["gameInfo"].value;
+    var gameImg = document.getElementById("gameImg").src;
     var gameGroup = document.forms["uploadGameTable"]["gameGroup"];
     var gameType = ""
 
@@ -10,32 +12,31 @@ function uploadGame() {
         }
     }
 
-    console.log(gameType)
+    console.log(gameImg)
 
-    // var settings = {
-    //     "url": "http://localhost:8080/user/regist",
-    //     "method": "POST",
-    //     "timeout": 0,
-    //     "headers": {
-    //         "Content-Type": "application/json"
-    //     },
-    //     "data": JSON.stringify({
-    //         "userAccount": Account,
-    //         "userPassword": Password,
-    //         "userName": Name,
-    //     }),
-    // };
+    var settings = {
+        "url": "http://localhost:8080/user/uploadGame",
+        "method": "POST",
+        "timeout": 0,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "data": JSON.stringify({
+            "gameName": gameName,
+            "gamePrice": gamePrice,
+            "gameInfo": gameInfo,
+            "gameImg": gameImg,
+            "gameType": gameType
+        }),
+    };
 
-    // $.ajax(settings).done(function (response) {
-    //     if (response["status"] == "Account already exists") {
-    //         document.getElementById("loginError").innerHTML =
-    //             "Account already exists";
-    //     } else {
-    //         alert("Sign up Success!");
-    //         window.location.href = 'login.html';
-    //     }
+    $.ajax(settings).done(function (response) {
+        if (response["status"] == "Accepted") {
+            window.location.href = 'result.html';
+        } else {
+            alert("Fail!");
+        }
 
-    //     console.log(response);
-    // });
+    });
 
 }

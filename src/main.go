@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 
+	"example.com/m/v2/module/game"
 	"example.com/m/v2/module/user"
 )
 
@@ -232,6 +233,58 @@ func UserUploadPortraitHandler(w http.ResponseWriter, r *http.Request) {
 	user.UploadPortraitOutput(w, &userUploadPortraitResponse)
 }
 
+func UserUploadGameHandler(w http.ResponseWriter, r *http.Request) {
+
+	var gameUploadRequest game.GameUploadRequest
+	var gameUploadResponse game.GameUploadResponse
+
+	// Allow CORS
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("content-type", "application/json")
+
+	// Check Method
+	if r.Method == "OPTIONS" {
+		return
+	}
+
+	if r.Method != "POST" {
+		gameUploadResponse.Status = "Wrong Method"
+		game.UploadGameOutput(w, &gameUploadResponse)
+	}
+
+	// Read Body
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Println(err)
+	}
+	json.Unmarshal([]byte(body), &gameUploadRequest)
+
+	// Read Cookie
+	cookie1, err1 := r.Cookie("userAccount")
+	if err1 != nil {
+		log.Println(err1)
+		gameUploadResponse.Status = "Can't access cookies"
+		game.UploadGameOutput(w, &gameUploadResponse)
+		return
+	}
+
+	gameUploadRequest.GameUploader = cookie1.Value
+
+	// Call Function
+	err = game.UploadGame(&gameUploadRequest)
+	if err != nil {
+		log.Println(err)
+		gameUploadResponse.Status = "Can't access cookies"
+		game.UploadGameOutput(w, &gameUploadResponse)
+		return
+	}
+
+	// Return JSON
+	gameUploadResponse.Status = "Accepted"
+	game.UploadGameOutput(w, &gameUploadResponse)
+}
+
 func main() {
 
 	// Functions Handle
@@ -245,6 +298,8 @@ func main() {
 	http.HandleFunc("/user/profile", UserProfileHandler)
 
 	http.HandleFunc("/user/uploadPortrait", UserUploadPortraitHandler)
+
+	http.HandleFunc("/user/uploadGame", UserUploadGameHandler)
 
 	// Pages Handle
 

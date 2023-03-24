@@ -94,7 +94,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                     <div class="col-lg-4">
                       <form method="get" enctype="multipart/form-data">
                         <label for="inputFile">
-                          <img id="gamePortrait" src="assets/images/subpicture.png" />
+                          <img id="gameImg" src="assets/images/subpicture.png" />
                         </label>
                         <input type="file" id="inputFile" style="display: none; ">
                       </form>
@@ -129,7 +129,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                               </li>
                               <li style="height: 100px;">
                                 Game Info
-                                <textarea name="gameInfo" style="float: right;" rows="5" cols="40"></textarea>
+                                <textarea id="gameInfo" style="float: right;" rows="5" cols="40"></textarea>
                               </li>
                             </ul>
                           </div>
@@ -176,8 +176,8 @@ https://templatemo.com/tm-579-cyborg-gaming
         var file1 = file.files[0]
         reader.readAsDataURL(file1);
         reader.onload = function (result) {
-          console.log(reader.result)
-          document.getElementById("gamePortrait").src = reader.result;
+          // console.log(reader.result)
+          document.getElementById("gameImg").src = reader.result;
         }
       })
     </script>

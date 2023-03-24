@@ -75,7 +75,7 @@ func UploadPortrait(userUploadPortraitRequest *UserUploadPortraitRequest) error 
 	user.UserAccount = userUploadPortraitRequest.UserAccount
 	user.UserPassword = userUploadPortraitRequest.UserPassword
 
-	if err := tx.Debug().Where("user_account = ? AND user_password = ?", user.UserAccount, user.UserPassword).Model(&user).Update("user_portrait", userUploadPortraitRequest.UserPortrait).Error; err != nil {
+	if err := tx.Where("user_account = ? AND user_password = ?", user.UserAccount, user.UserPassword).Model(&user).Update("user_portrait", userUploadPortraitRequest.UserPortrait).Error; err != nil {
 		tx.Rollback()
 		return err
 	}
