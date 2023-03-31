@@ -43,7 +43,7 @@ func UserRegistHandler(w http.ResponseWriter, r *http.Request) {
 	err = user.Regist(&userRegistRequest)
 	if err != nil {
 		log.Println(err)
-		userRegistResponse.Status = "Account already exists"
+		userRegistResponse.Status = "SQL Access Error"
 		user.RegistOutput(w, &userRegistResponse)
 		return
 	}
@@ -85,7 +85,7 @@ func UserLoginHandler(w http.ResponseWriter, r *http.Request) {
 	err = user.Login(&userLoginRequest)
 	if err != nil {
 		log.Println(err)
-		userLoginResponse.Status = "Wrong Username or Password"
+		userLoginResponse.Status = "SQL Access Error"
 		user.LoginOutput(w, &userLoginResponse)
 		return
 	}
@@ -157,7 +157,7 @@ func UserProfileHandler(w http.ResponseWriter, r *http.Request) {
 	if err1 != nil || err2 != nil {
 		log.Println(err1)
 		log.Println(err2)
-		userProflieResponse.Status = "Can't access cookies"
+		userProflieResponse.Status = "SQL Access Error"
 		user.ProfileOutput(w, &userProflieResponse)
 		return
 	}
@@ -167,7 +167,7 @@ func UserProfileHandler(w http.ResponseWriter, r *http.Request) {
 	err := user.Profile(&userLoginRequest, &userProflieResponse)
 	if err != nil {
 		log.Println(err)
-		userProflieResponse.Status = "Can't access cookies"
+		userProflieResponse.Status = "SQL Access Error"
 		user.ProfileOutput(w, &userProflieResponse)
 		return
 	}
@@ -210,7 +210,7 @@ func UserUploadPortraitHandler(w http.ResponseWriter, r *http.Request) {
 	if err1 != nil || err2 != nil {
 		log.Println(err1)
 		log.Println(err2)
-		userUploadPortraitResponse.Status = "Can't access cookies"
+		userUploadPortraitResponse.Status = "SQL Access Error"
 		user.UploadPortraitOutput(w, &userUploadPortraitResponse)
 		return
 	}
@@ -223,7 +223,7 @@ func UserUploadPortraitHandler(w http.ResponseWriter, r *http.Request) {
 	err = user.UploadPortrait(&userUploadPortraitRequest)
 	if err != nil {
 		log.Println(err)
-		userUploadPortraitResponse.Status = "Can't access cookies"
+		userUploadPortraitResponse.Status = "SQL Access Error"
 		user.UploadPortraitOutput(w, &userUploadPortraitResponse)
 		return
 	}
@@ -233,7 +233,7 @@ func UserUploadPortraitHandler(w http.ResponseWriter, r *http.Request) {
 	user.UploadPortraitOutput(w, &userUploadPortraitResponse)
 }
 
-func UserUploadGameHandler(w http.ResponseWriter, r *http.Request) {
+func GameUploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	var gameUploadRequest game.GameUploadRequest
 	var gameUploadResponse game.GameUploadResponse
@@ -250,7 +250,7 @@ func UserUploadGameHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != "POST" {
 		gameUploadResponse.Status = "Wrong Method"
-		game.UploadGameOutput(w, &gameUploadResponse)
+		game.GameUploadOutput(w, &gameUploadResponse)
 	}
 
 	// Read Body
@@ -264,25 +264,60 @@ func UserUploadGameHandler(w http.ResponseWriter, r *http.Request) {
 	cookie1, err1 := r.Cookie("userAccount")
 	if err1 != nil {
 		log.Println(err1)
-		gameUploadResponse.Status = "Can't access cookies"
-		game.UploadGameOutput(w, &gameUploadResponse)
+		gameUploadResponse.Status = "SQL Access Error"
+		game.GameUploadOutput(w, &gameUploadResponse)
 		return
 	}
 
 	gameUploadRequest.GameUploader = cookie1.Value
 
 	// Call Function
-	err = game.UploadGame(&gameUploadRequest)
+	err = game.GameUpload(&gameUploadRequest)
 	if err != nil {
 		log.Println(err)
-		gameUploadResponse.Status = "Can't access cookies"
-		game.UploadGameOutput(w, &gameUploadResponse)
+		gameUploadResponse.Status = "SQL Access Error"
+		game.GameUploadOutput(w, &gameUploadResponse)
 		return
 	}
 
 	// Return JSON
 	gameUploadResponse.Status = "Accepted"
-	game.UploadGameOutput(w, &gameUploadResponse)
+	game.GameUploadOutput(w, &gameUploadResponse)
+}
+
+func GameIndexHandler(w http.ResponseWriter, r *http.Request) {
+
+	var gameIndexResponse game.GameIndexResponse
+
+	// Allow CORS
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("content-type", "application/json")
+
+	// Check Method
+	if r.Method == "OPTIONS" {
+		return
+	}
+
+	if r.Method != "POST" {
+		gameIndexResponse.Status = "Wrong Method"
+		game.GameIndexOutput(w, &gameIndexResponse)
+	}
+
+	// Call Function
+	err := game.GameIndex(&gameIndexResponse)
+	if err != nil {
+		log.Println(err)
+		gameIndexResponse.Status = "SQL Access Error"
+		game.GameIndexOutput(w, &gameIndexResponse)
+		return
+	}
+
+	// fmt.Println(gameIndexResponse)
+
+	// Return JSON
+	gameIndexResponse.Status = "Accepted"
+	game.GameIndexOutput(w, &gameIndexResponse)
 }
 
 func main() {
@@ -299,7 +334,9 @@ func main() {
 
 	http.HandleFunc("/user/uploadPortrait", UserUploadPortraitHandler)
 
-	http.HandleFunc("/user/uploadGame", UserUploadGameHandler)
+	http.HandleFunc("/game/upload", GameUploadHandler)
+
+	http.HandleFunc("/game/index", GameIndexHandler)
 
 	// Pages Handle
 

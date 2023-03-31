@@ -24,7 +24,7 @@ type GameUploadRequest struct {
 	GameUploader string `json:"GameUploader"`
 }
 
-func UploadGame(gameUploadRequest *GameUploadRequest) error {
+func GameUpload(gameUploadRequest *GameUploadRequest) error {
 
 	// connect database
 	DB := model.MysqlConn()
@@ -32,7 +32,7 @@ func UploadGame(gameUploadRequest *GameUploadRequest) error {
 	// start transcation
 	tx := DB.Begin()
 
-	var game model.Game
+	game := new(model.Game)
 	game.GameUploader = gameUploadRequest.GameUploader
 	game.GameImg = gameUploadRequest.GameImg
 	game.GameInfo = gameUploadRequest.GameInfo
@@ -45,11 +45,43 @@ func UploadGame(gameUploadRequest *GameUploadRequest) error {
 		return err
 	}
 
+	tag := new(model.Tag)
+
+	if err := tx.First(&game, "game_name = ?", game.GameName).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+	tag.GameId = game.GameId
+	tag.GameName = game.GameName
+
+	for i := 0; i < len(game.GameType); i++ {
+		if game.GameType[i] == ';' {
+			// fmt.Println(tag.TagName)
+
+			ID := new(model.Type)
+			if err := tx.Take(&ID, "type_name = ?", tag.TagName).Error; err != nil {
+				tx.Rollback()
+				return err
+			}
+
+			tag.TagId = ID.TypeId
+
+			if err := tx.Create(&tag).Error; err != nil {
+				tx.Rollback()
+				return err
+			}
+
+			tag.TagName = ""
+		} else {
+			tag.TagName += string(game.GameType[i])
+		}
+	}
+
 	tx.Commit()
 	return tx.Error
 }
 
-func UploadGameOutput(w http.ResponseWriter, gameUploadResponse *GameUploadResponse) {
+func GameUploadOutput(w http.ResponseWriter, gameUploadResponse *GameUploadResponse) {
 	jsonbyte, err := json.Marshal(gameUploadResponse)
 	if err != nil {
 		log.Println(err)
