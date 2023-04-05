@@ -320,6 +320,92 @@ func GameIndexHandler(w http.ResponseWriter, r *http.Request) {
 	game.GameIndexOutput(w, &gameIndexResponse)
 }
 
+func GameBrowserHandler(w http.ResponseWriter, r *http.Request) {
+
+	var gameBrowserResqust game.GameBrowserResqust
+	var gameBrowserResponse game.GameBrowserResponse
+
+	// Allow CORS
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("content-type", "application/json")
+
+	// Check Method
+	if r.Method == "OPTIONS" {
+		return
+	}
+
+	if r.Method != "POST" {
+		gameBrowserResponse.Status = "Wrong Method"
+		game.GameBrowserOutput(w, &gameBrowserResponse)
+	}
+
+	// Read Body
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Println(err)
+	}
+	json.Unmarshal([]byte(body), &gameBrowserResqust)
+
+	// Call Function
+	err = game.GameBrowser(&gameBrowserResqust, &gameBrowserResponse)
+	if err != nil {
+		log.Println(err)
+		gameBrowserResponse.Status = "SQL Access Error"
+		game.GameBrowserOutput(w, &gameBrowserResponse)
+		return
+	}
+
+	// fmt.Println(gameIndexResponse)
+
+	// Return JSON
+	gameBrowserResponse.Status = "Accepted"
+	game.GameBrowserOutput(w, &gameBrowserResponse)
+}
+
+func GameDetailsHandler(w http.ResponseWriter, r *http.Request) {
+
+	var gameDetailsRequest game.GameDetailsRequest
+	var gameDetailsResponse game.GameDetailsResponse
+
+	// Allow CORS
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("content-type", "application/json")
+
+	// Check Method
+	if r.Method == "OPTIONS" {
+		return
+	}
+
+	if r.Method != "POST" {
+		gameDetailsResponse.Status = "Wrong Method"
+		game.GameDetailsOutput(w, &gameDetailsResponse)
+	}
+
+	// Read Body
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Println(err)
+	}
+	json.Unmarshal([]byte(body), &gameDetailsRequest)
+
+	// Call Function
+	err = game.GameDetails(&gameDetailsRequest, &gameDetailsResponse)
+	if err != nil {
+		log.Println(err)
+		gameDetailsResponse.Status = "SQL Access Error"
+		game.GameDetailsOutput(w, &gameDetailsResponse)
+		return
+	}
+
+	// fmt.Println(gameIndexResponse)
+
+	// Return JSON
+	gameDetailsResponse.Status = "Accepted"
+	game.GameDetailsOutput(w, &gameDetailsResponse)
+}
+
 func main() {
 
 	// Functions Handle
@@ -337,6 +423,10 @@ func main() {
 	http.HandleFunc("/game/upload", GameUploadHandler)
 
 	http.HandleFunc("/game/index", GameIndexHandler)
+
+	http.HandleFunc("/game/browser", GameBrowserHandler)
+
+	http.HandleFunc("/game/details", GameDetailsHandler)
 
 	// Pages Handle
 
