@@ -81,7 +81,7 @@ function getGameIndex() {
 
                 //创建h4标签
                 var h4 = $('<h4/>', {
-                    html: '<em>' + response["gameType"][i]["typeName"] + '</em> Game'
+                    html: '<em>' + response["gameType"][i]["tagName"] + '</em> Game'
                 });
 
                 //将h4添加到div.heading-section中
@@ -105,7 +105,7 @@ function getGameIndex() {
 
                 //创建a标签
                 var a = $('<a/>', {
-                    href: 'browse.html?type=' + response["gameType"][i]["typeName"],
+                    href: 'browse.html?type=' + response["gameType"][i]["tagName"],
                     html: 'Discover More'
                 });
 
@@ -142,9 +142,7 @@ function getGameIndex() {
                         html: '<a href="details.html?name=' + response["gameIndex"][i]["gameItem"][j]["gameName"] + '">' + response["gameIndex"][i]["gameItem"][j]["gameName"] + '</a>'
                     });
                     var span = $('<span>').text(response["gameIndex"][i]["gameItem"][j]["gameUploader"]);
-                    // var a = $('<a>', {
-                    //     href: 'browse.html?type=' + response["gameType"][i]["typeName"],
-                    // });
+
                     h4.append('<br>').append(span);
                     item.append(h4);
 
@@ -242,8 +240,9 @@ function getGameDetails() {
     const gameName = urlParams.get('name');
     const header = document.getElementById('header');
 
-    console.log(gameName)
+    // console.log(gameName)
     header.innerText = gameName
+    header1.innerText = gameName
 
     var settings = {
         "url": "http://localhost:8080/game/details",
@@ -259,12 +258,24 @@ function getGameDetails() {
 
     $.ajax(settings).done(function (response) {
         if (response["status"] == "Accepted") {
-            // console.log()
+            console.log(response)
 
+            document.getElementById("gameId").innerText = response["gameItem"]["gameId"];
             document.getElementById("gamePortrait").src = response["gameItem"]["gameImg"];
+            document.getElementById("gameInfo").innerText = response["gameItem"]["gameInfo"];
+            document.getElementById("gamePrice").innerText = response["gameItem"]["gamePrice"];
+            document.getElementById("gamePrice1").innerText = response["gameItem"]["gamePrice"];
+            document.getElementById("gameType").innerText = response["gameItem"]["gameType"];
+
+            if (response["inventory"] == true) {
+                document.getElementById("button1").style.display = "none"
+            }
+            else {
+                document.getElementById("button2").style.display = "none"
+            }
 
         } else {
-            alert("None GameType!");
+            alert("Fail!");
         }
     });
 

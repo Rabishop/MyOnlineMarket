@@ -8,6 +8,10 @@ type User struct {
 	UserPortrait string `gorm:"column:user_portrait;" json:"userPortrait"`
 }
 
+type UserID struct {
+	UserId int64 `gorm:"column:user_id;AUTO_INCREMENT;" json:"userId"`
+}
+
 // Return TableName
 func (User) TableName() string {
 	return "user"

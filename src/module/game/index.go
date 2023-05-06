@@ -15,9 +15,9 @@ type GameIndexResquest struct {
 
 // GameIndexResponse struct
 type GameIndexResponse struct {
-	Status    string       `json:"status"`
-	GameIndex []GameList   `json:"gameIndex"`
-	GameType  []model.Type `json:"gameType"`
+	Status    string           `json:"status"`
+	GameIndex []GameList       `json:"gameIndex"`
+	GameType  []model.Tag_list `json:"gameType"`
 }
 
 type GameList struct {
@@ -32,6 +32,7 @@ func GameIndex(gameIndexResponse *GameIndexResponse) error {
 	// start transcation
 	tx := DB.Begin()
 
+	// get games on the homepage
 	gameList := make([]model.Tag, 100, 200)
 
 	if err := tx.Raw("(SELECT * FROM tag AS a WHERE (SELECT COUNT(*) FROM tag AS b WHERE b.tag_name = a.tag_name AND b.game_id >= a.game_id) <= 4 ORDER BY a.game_id ASC) ORDER BY tag_id").Scan(&gameList).Error; err != nil {
@@ -66,7 +67,7 @@ func GameIndex(gameIndexResponse *GameIndexResponse) error {
 		}
 	}
 
-	if err := tx.Order("type_id asc").Find(&gameIndexResponse.GameType).Error; err != nil {
+	if err := tx.Order("tag_id asc").Find(&gameIndexResponse.GameType).Error; err != nil {
 		tx.Rollback()
 		return err
 	}

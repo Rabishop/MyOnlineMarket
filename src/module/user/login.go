@@ -32,6 +32,7 @@ func Login(userLoginRequest *UserLoginRequest) error {
 	user.UserAccount = userLoginRequest.UserAccount
 	user.UserPassword = userLoginRequest.UserPassword
 
+	// user login
 	if err := tx.Where("user_account = ? AND user_password = ?", user.UserAccount, user.UserPassword).Take(&user).Error; err != nil {
 		tx.Rollback()
 		return err

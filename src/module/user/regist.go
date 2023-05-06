@@ -34,6 +34,9 @@ func Regist(userRegistRequest *UserRegistRequest) error {
 	user.UserAccount = userRegistRequest.UserAccount
 	user.UserPassword = userRegistRequest.UserPassword
 
+	fmt.Println(user)
+
+	// Upload a new user
 	if err := tx.Create(&user).Error; err != nil {
 		tx.Rollback()
 		return err

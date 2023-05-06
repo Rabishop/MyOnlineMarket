@@ -40,6 +40,7 @@ func GameUpload(gameUploadRequest *GameUploadRequest) error {
 	game.GamePrice = gameUploadRequest.GamePrice
 	game.GameType = gameUploadRequest.GameType
 
+	// upload a new game
 	if err := tx.Create(&game).Error; err != nil {
 		tx.Rollback()
 		return err
@@ -54,17 +55,18 @@ func GameUpload(gameUploadRequest *GameUploadRequest) error {
 	tag.GameId = game.GameId
 	tag.GameName = game.GameName
 
+	// Add games to database by types
 	for i := 0; i < len(game.GameType); i++ {
 		if game.GameType[i] == ';' {
 			// fmt.Println(tag.TagName)
 
-			ID := new(model.Type)
-			if err := tx.Take(&ID, "type_name = ?", tag.TagName).Error; err != nil {
+			ID := new(model.Tag_list)
+			if err := tx.Take(&ID, "tag_name = ?", tag.TagName).Error; err != nil {
 				tx.Rollback()
 				return err
 			}
 
-			tag.TagId = ID.TypeId
+			tag.TagId = ID.TagId
 
 			if err := tx.Create(&tag).Error; err != nil {
 				tx.Rollback()

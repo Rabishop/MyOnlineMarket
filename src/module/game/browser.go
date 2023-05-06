@@ -28,7 +28,8 @@ func GameBrowser(gameBrowserResqust *GameBrowserResqust, gameBrowserResponse *Ga
 	// start transcation
 	tx := DB.Begin()
 
-	if err := tx.Debug().Where("game_type like ?", "%"+gameBrowserResqust.GameType+"%").Find(&gameBrowserResponse.GameItem).Error; err != nil {
+	// View games by types
+	if err := tx.Where("game_type like ?", "%"+gameBrowserResqust.GameType+"%").Find(&gameBrowserResponse.GameItem).Error; err != nil {
 		tx.Rollback()
 		return err
 	}
