@@ -700,23 +700,9 @@ func CartCheckHandler(w http.ResponseWriter, r *http.Request) {
 	cart.CartCheckOutput(w, &cartCheckResponse)
 }
 
-// func handleRequest(w http.ResponseWriter, r *http.Request) {
-// 	// 获取请求的路径
-// 	path := r.URL.Path
-
-// 	// 检查路径中是否包含文件后缀
-// 	if strings.HasSuffix(path, ".html") {
-// 		// 如果有后缀，则重定向到去掉后缀的路径
-// 		newPath := strings.TrimSuffix(path, ".html")
-// 		http.Redirect(w, r, newPath, http.StatusMovedPermanently)
-// 		return
-// 	}
-// }
-
 func main() {
 
 	// Functions Handle
-	// http.HandleFunc("/", handleRequest)
 
 	http.HandleFunc("/user/regist", UserRegistHandler)
 
@@ -746,11 +732,13 @@ func main() {
 
 	http.HandleFunc("/cart/check", CartCheckHandler)
 
-	// Pages Handle
+	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("../pages/assets"))))
 
-	fs := http.FileServer(http.Dir("../pages/"))
+	http.Handle("/vendor/", http.StripPrefix("/vendor/", http.FileServer(http.Dir("../pages/vendor"))))
 
-	http.Handle("/", http.StripPrefix("", fs))
+	http.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "../pages/"+r.URL.Path+".html")
+	}))
 
 	// Build the Server
 

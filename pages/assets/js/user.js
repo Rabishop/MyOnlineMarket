@@ -58,7 +58,7 @@ function regist() {
         "Account already exists";
     } else {
       alert("Sign up Success!");
-      window.location.href = 'login.html';
+      window.location.href = 'login';
     }
 
     console.log(response);
@@ -101,7 +101,7 @@ function login() {
         "Wrong Username or Password";
     } else {
       alert("Login in Success!");
-      window.location.href = 'index.html';
+      window.location.href = 'index';
     }
 
     console.log(response);
@@ -153,7 +153,7 @@ function profileload() {
 
     } else {
       alert("Please log in first!")
-      window.location.href = 'login.html';
+      window.location.href = 'login';
     }
 
     console.log(response);
@@ -174,7 +174,7 @@ function indexload() {
     if (response["status"] == "Accepted") {
     } else {
       alert("Please log in first!")
-      window.location.href = 'login.html';
+      window.location.href = 'login';
     }
 
     console.log(response);

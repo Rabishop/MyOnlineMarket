@@ -30,7 +30,7 @@ function uploadGame() {
 
     $.ajax(settings).done(function (response) {
         if (response["status"] == "Accepted") {
-            window.location.href = 'result.html';
+            window.location.href = 'result';
         } else {
             alert("Fail!");
         }
@@ -105,7 +105,7 @@ function getGameIndex() {
 
                 //创建a标签
                 var a = $('<a/>', {
-                    href: 'browse.html?type=' + response["gameType"][i]["tagName"],
+                    href: 'browse?type=' + response["gameType"][i]["tagName"],
                     html: 'Discover More'
                 });
 
@@ -139,7 +139,7 @@ function getGameIndex() {
 
                     // 创建标题 h4 元素和 span 元素，并设置相应的文本
                     var h4 = $('<h4>', {
-                        html: '<a href="details.html?name=' + response["gameIndex"][i]["gameItem"][j]["gameName"] + '">' + response["gameIndex"][i]["gameItem"][j]["gameName"] + '</a>'
+                        html: '<a href="details?name=' + response["gameIndex"][i]["gameItem"][j]["gameName"] + '">' + response["gameIndex"][i]["gameItem"][j]["gameName"] + '</a>'
                     });
                     var span = $('<span>').text(response["gameIndex"][i]["gameItem"][j]["gameUploader"]);
 
@@ -211,7 +211,7 @@ function getGameBrowse() {
 
                 // 创建标题 h4 元素和 span 元素，并设置相应的文本
                 var h4 = $('<h4>', {
-                    html: '<a href="details.html?name=' + response["gameItem"][j]["gameName"] + '">' + response["gameItem"][j]["gameName"] + '</a>'
+                    html: '<a href="details?name=' + response["gameItem"][j]["gameName"] + '">' + response["gameItem"][j]["gameName"] + '</a>'
                 });
                 var span = $('<span>').text(response["gameItem"][j]["gameUploader"]);
                 h4.append('<br>').append(span);

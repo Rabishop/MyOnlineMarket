@@ -16,7 +16,7 @@ function uploadCart() {
 
     $.ajax(settings).done(function (response) {
         if (response["status"] == "Accepted") {
-            window.location.href = 'cart.html';
+            window.location.href = 'cart';
         } else {
             alert("Fail!");
         }
@@ -210,7 +210,7 @@ function checkPayment() {
 
     $.ajax(settings).done(function (response) {
         if (response["status"] == "Accepted") {
-            window.location.href = 'result.html';
+            window.location.href = 'result';
         } else {
             alert("Fail!");
         }
