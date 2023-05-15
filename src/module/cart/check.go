@@ -12,8 +12,7 @@ import (
 
 // CartCheckRequest struct
 type CartCheckRequest struct {
-	UserAccount  string `json:"userAccount"`
-	UserPassword string `json:"userPassword"`
+	UserID int64 `json:"userID"`
 }
 
 // CartCheckResponse struct
@@ -29,21 +28,9 @@ func CartCheck(cartCheckRequest *CartCheckRequest) error {
 	// start transcation
 	tx := DB.Begin()
 
-	var user model.User
-	var userID model.UserID
-	user.UserAccount = cartCheckRequest.UserAccount
-	user.UserPassword = cartCheckRequest.UserPassword
-
-	// get userID
-	if err := tx.Model(&user).Where("user_account = ? AND user_password = ?", user.UserAccount, user.UserPassword).Take(&userID).Error; err != nil {
-		tx.Rollback()
-		return err
-	}
-
-	cart := new([]model.Cart)
-
 	// get the cart by userID
-	if err := tx.Where("user_id = ?", userID.UserId).Find(cart).Error; err != nil {
+	cart := new([]model.Cart)
+	if err := tx.Where("user_id = ?", cartCheckRequest.UserID).Find(cart).Error; err != nil {
 		tx.Rollback()
 		return err
 	}
@@ -52,8 +39,8 @@ func CartCheck(cartCheckRequest *CartCheckRequest) error {
 	inventory := new([]model.Inventory)
 	for i := 0; i < len(*cart); i++ {
 		var item model.Inventory
-		item.GameId = (*cart)[i].GameId
-		item.UserId = (*cart)[i].UserId
+		item.GameID = (*cart)[i].GameID
+		item.UserID = (*cart)[i].UserID
 		item.InventoryDateAdded = time.Now().String()[0:20]
 
 		*inventory = append(*inventory, item)
@@ -65,7 +52,7 @@ func CartCheck(cartCheckRequest *CartCheckRequest) error {
 	}
 
 	// Delete games from the cart
-	if err := tx.Where("user_id = ?", userID.UserId).Delete(&cart).Error; err != nil {
+	if err := tx.Where("user_id = ?", cartCheckRequest.UserID).Delete(&cart).Error; err != nil {
 		tx.Rollback()
 		return err
 	}

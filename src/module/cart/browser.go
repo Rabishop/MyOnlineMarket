@@ -18,8 +18,7 @@ type CartBrowserResponse struct {
 
 // CartBrowerRequest struct
 type CartBrowserResqust struct {
-	UserAccount  string `json:"userAccount"`
-	UserPassword string `json:"userPassword"`
+	UserID int64 `json:"userID"`
 }
 
 func CartBrowser(cartBrowerResqust *CartBrowserResqust, cartBrowerResponse *CartBrowserResponse) error {
@@ -30,27 +29,17 @@ func CartBrowser(cartBrowerResqust *CartBrowserResqust, cartBrowerResponse *Cart
 	// start transcation
 	tx := DB.Begin()
 
-	var user model.User
-	var userID model.UserID
 	gameItem := new(model.Game)
-	user.UserAccount = cartBrowerResqust.UserAccount
-	user.UserPassword = cartBrowerResqust.UserPassword
-
-	// get userID
-	if err := tx.Model(&user).Where("user_account = ? AND user_password = ?", user.UserAccount, user.UserPassword).Take(&userID).Error; err != nil {
-		tx.Rollback()
-		return err
-	}
 
 	//　get gameID in the cart
-	if err := tx.Where("user_id = ?", userID.UserId).Find(&cartBrowerResponse.CartList).Error; err != nil {
+	if err := tx.Where("user_id = ?", cartBrowerResqust.UserID).Find(&cartBrowerResponse.CartList).Error; err != nil {
 		tx.Rollback()
 		return err
 	}
 
 	// get gameList by gameID
 	for i := 0; i < len(cartBrowerResponse.CartList); i++ {
-		if err := tx.Where("game_id = ?", cartBrowerResponse.CartList[i].GameId).Take(&gameItem).Error; err != nil {
+		if err := tx.Where("game_id = ?", cartBrowerResponse.CartList[i].GameID).Take(&gameItem).Error; err != nil {
 			tx.Rollback()
 			return err
 		}

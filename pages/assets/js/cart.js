@@ -1,6 +1,6 @@
 function uploadCart() {
 
-    var gameId = Number(document.getElementById('gameId').innerHTML);
+    var gameID = Number(document.getElementById('gameID').innerHTML);
 
     var settings = {
         "url": "http://localhost:8080/cart/upload",
@@ -10,19 +10,43 @@ function uploadCart() {
             "Content-Type": "application/json"
         },
         "data": JSON.stringify({
-            "gameId": gameId,
+            "gameID": gameID,
         }),
     };
 
     $.ajax(settings).done(function (response) {
         if (response["status"] == "Accepted") {
             window.location.href = 'cart';
+        } else if (response["status"] == "SQL Access Error") {
+            alert("Already in the shopping cart or inventory!");
         } else {
-            alert("Fail!");
+            uploadTempCart()
         }
 
     });
 }
+
+function uploadTempCart() {
+
+    alert("Fail")
+
+    var tempCartJSON = localStorage.getItem("tempCart");
+    var tempCart = JSON.parse(tempCartJSON);
+
+    console.log(tempCart)
+
+    if (tempCart == null) {
+        tempCart = [];
+    }
+    tempCart.push(Number(document.getElementById("gameID").innerText))
+
+
+    var tempCartJSON = JSON.stringify(tempCart);
+    localStorage.setItem("tempCart", tempCartJSON);
+
+    console.log(tempCart)
+}
+
 
 function browserCart() {
 
@@ -92,7 +116,7 @@ function browserCart() {
                 // var div_1 = $('<div>').addClass('border-button');
                 var div_1 = $('<div>', {
                     class: 'border-button',
-                    id: response["gameList"][i]["gameId"],
+                    id: response["gameList"][i]["gameID"],
                     onclick: 'removeCart(this.id)'
                 });
                 var a = $('<a>').attr('href', '#').text('Remove it');
@@ -111,7 +135,11 @@ function browserCart() {
             document.getElementById('gameNumber').innerHTML = response["cartList"].length
 
         } else {
-            alert("Fail!");
+            var tempCart = [45, 46, 47];
+
+            var tempCartJSON = JSON.stringify(tempCart);
+
+            alert(tempCart)
         }
 
     });
@@ -119,8 +147,8 @@ function browserCart() {
 
 function removeCart(buttonId) {
 
-    const gameId = Number(buttonId)
-    console.log(gameId)
+    const gameID = Number(buttonId)
+    console.log(gameID)
 
     var settings = {
         "url": "http://localhost:8080/cart/remove",
@@ -130,7 +158,7 @@ function removeCart(buttonId) {
             "Content-Type": "application/json"
         },
         "data": JSON.stringify({
-            "gameId": gameId,
+            "gameID": gameID,
         }),
     };
 

@@ -96,12 +96,12 @@ function login() {
   };
 
   $.ajax(settings).done(function (response) {
-    if (response["status"] == "Wrong Username or Password") {
-      document.getElementById("loginError").innerHTML =
-        "Wrong Username or Password";
-    } else {
+    if (response["status"] == "Accepted") {
       alert("Login in Success!");
       window.location.href = 'index';
+    } else {
+      document.getElementById("loginError").innerHTML =
+        "Wrong Username or Password";
     }
 
     console.log(response);
@@ -130,6 +130,7 @@ function logout() {
 }
 
 function profileload() {
+
   var settings = {
     "url": "http://localhost:8080/user/profile",
     "method": "POST",
@@ -141,7 +142,7 @@ function profileload() {
 
   $.ajax(settings).done(function (response) {
 
-    // console.log(response["userPortrait"])
+    console.log(response)
 
     if (response["status"] == "Accepted") {
       document.getElementById("userName").innerHTML =
@@ -155,31 +156,29 @@ function profileload() {
       alert("Please log in first!")
       window.location.href = 'login';
     }
-
-    console.log(response);
   });
 }
 
-function indexload() {
-  var settings = {
-    "url": "http://localhost:8080/user/profile",
-    "method": "POST",
-    "timeout": 0,
-    "headers": {
-      "Content-Type": "application/json",
-    },
-  };
+// function indexload() {
+//   var settings = {
+//     "url": "http://localhost:8080/user/profile",
+//     "method": "POST",
+//     "timeout": 0,
+//     "headers": {
+//       "Content-Type": "application/json",
+//     },
+//   };
 
-  $.ajax(settings).done(function (response) {
-    if (response["status"] == "Accepted") {
-    } else {
-      alert("Please log in first!")
-      window.location.href = 'login';
-    }
+//   $.ajax(settings).done(function (response) {
+//     if (response["status"] == "Accepted") {
+//     } else {
+//       alert("Please log in first!")
+//       window.location.href = 'login';
+//     }
 
-    console.log(response);
-  });
-}
+//     console.log(response);
+//   });
+// }
 
 function getInventory() {
 
@@ -282,7 +281,7 @@ function getHistory() {
         console.log(window.location.hash)
 
         // 添加第六个 li 元素到 ul 中
-        $("<li>").append($("<h4>").text("Transaction number")).append($("<span>").text(djb2Code(response["gameList"][j]["userId"] + response["gameList"][j]["gameId"] + response["itemList"][j]["gameName"]))).appendTo($ul);
+        $("<li>").append($("<h4>").text("Transaction number")).append($("<span>").text(djb2Code(response["gameList"][j]["userID"] + response["gameList"][j]["gameID"] + response["itemList"][j]["gameName"]))).appendTo($ul);
 
         // 将 ul 元素添加到 div 中
         $item.append($ul);

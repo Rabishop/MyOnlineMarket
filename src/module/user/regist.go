@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"example.com/m/v2/model"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // UserRegistResponse struct
@@ -21,6 +22,11 @@ type UserRegistRequest struct {
 	UserName     string `json:"userName"`
 }
 
+// 生成密码的哈希值
+func hashPassword(password string) ([]byte, error) {
+	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+}
+
 func Regist(userRegistRequest *UserRegistRequest) error {
 
 	// connect database
@@ -32,9 +38,11 @@ func Regist(userRegistRequest *UserRegistRequest) error {
 	var user model.User
 	user.UserName = userRegistRequest.UserName
 	user.UserAccount = userRegistRequest.UserAccount
-	user.UserPassword = userRegistRequest.UserPassword
-
-	fmt.Println(user)
+	if passwordHash, err := hashPassword(userRegistRequest.UserPassword); err != nil {
+		log.Println(err)
+	} else {
+		user.UserPassword = string(passwordHash)
+	}
 
 	// Upload a new user
 	if err := tx.Create(&user).Error; err != nil {

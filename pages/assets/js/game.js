@@ -257,25 +257,28 @@ function getGameDetails() {
     };
 
     $.ajax(settings).done(function (response) {
+
+        console.log(response)
+
         if (response["status"] == "Accepted") {
             console.log(response)
 
-            document.getElementById("gameId").innerText = response["gameItem"]["gameId"];
+            document.getElementById("gameID").innerText = response["gameItem"]["gameID"];
             document.getElementById("gamePortrait").src = response["gameItem"]["gameImg"];
             document.getElementById("gameInfo").innerText = response["gameItem"]["gameInfo"];
             document.getElementById("gamePrice").innerText = response["gameItem"]["gamePrice"];
             document.getElementById("gamePrice1").innerText = response["gameItem"]["gamePrice"];
             document.getElementById("gameType").innerText = response["gameItem"]["gameType"];
 
-            if (response["inventory"] == true) {
-                document.getElementById("button1").style.display = "none"
-            }
-            else {
+
+
+            if (response["inventory"] == false) {
                 document.getElementById("button2").style.display = "none"
             }
+            else {
+                document.getElementById("button1").style.display = "none"
+            }
 
-        } else {
-            alert("Fail!");
         }
     });
 

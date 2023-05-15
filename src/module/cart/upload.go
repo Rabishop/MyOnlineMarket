@@ -2,6 +2,7 @@ package cart
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -12,9 +13,8 @@ import (
 
 // CartUploadRequest struct
 type CartUploadRequest struct {
-	UserAccount   string `json:"userAccount"`
-	UserPassword  string `json:"userPassword"`
-	GameId        int64  `json:"gameId"`
+	UserID        int64  `json:"userID"`
+	GameID        int64  `json:"gameID"`
 	CartDateAdded string `json:"cartDateAdded"`
 }
 
@@ -31,21 +31,21 @@ func CartUpload(cartUploadRequest *CartUploadRequest) error {
 	// start transcation
 	tx := DB.Begin()
 
-	var user model.User
-	var userID model.UserID
-	user.UserAccount = cartUploadRequest.UserAccount
-	user.UserPassword = cartUploadRequest.UserPassword
+	cart := new(model.Cart)
+	cart.UserID = cartUploadRequest.UserID
+	cart.GameID = cartUploadRequest.GameID
+	cart.CartDateAdded = time.Now().String()[0:20]
 
-	// get userID
-	if err := tx.Model(&user).Where("user_account = ? AND user_password = ?", user.UserAccount, user.UserPassword).Take(&userID).Error; err != nil {
+	// check inventory
+	var count int64
+	if err := tx.Where("user_id = ? AND game_id = ?", cart.UserID, cartUploadRequest.GameID).Find(&model.Inventory{}).Count(&count).Error; err != nil {
 		tx.Rollback()
 		return err
 	}
 
-	cart := new(model.Cart)
-	cart.UserId = userID.UserId
-	cart.GameId = cartUploadRequest.GameId
-	cart.CartDateAdded = time.Now().String()[0:20]
+	if count > 0 {
+		return errors.New("already in the inventory")
+	}
 
 	// Upload games to a cart
 	if err := tx.Create(&cart).Error; err != nil {

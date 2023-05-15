@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
+
   <head>
     <title>Gmail API Quickstart</title>
     <meta charset="utf-8" />
   </head>
+
   <body>
     <p>Gmail API Quickstart</p>
 
@@ -95,10 +97,10 @@
         if (gapi.client.getToken() === null) {
           // Prompt the user to select a Google Account and ask for consent to share their data
           // when establishing a new session.
-          tokenClient.requestAccessToken({prompt: 'consent'});
+          tokenClient.requestAccessToken({ prompt: 'consent' });
         } else {
           // Skip display of account chooser and consent dialog for an existing session.
-          tokenClient.requestAccessToken({prompt: ''});
+          tokenClient.requestAccessToken({ prompt: '' });
         }
       }
 
@@ -124,7 +126,7 @@
         let response;
         try {
           response = await gapi.client.gmail.users.labels.list({
-            'userId': 'me',
+            'userID': 'me',
           });
         } catch (err) {
           document.getElementById('content').innerText = err.message;
@@ -137,12 +139,13 @@
         }
         // Flatten to string to display
         const output = labels.reduce(
-            (str, label) => `${str}${label.name}\n`,
-            'Labels:\n');
+          (str, label) => `${str}${label.name}\n`,
+          'Labels:\n');
         document.getElementById('content').innerText = output;
       }
     </script>
     <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
     <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
   </body>
+
 </html>

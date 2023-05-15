@@ -16,6 +16,7 @@ type GameUploadResponse struct {
 
 // UserRegistRequest struct
 type GameUploadRequest struct {
+	UserID       int64  `json:"userID"`
 	GamePrice    int64  `json:"gamePrice"`
 	GameName     string `json:"gameName"`
 	GameType     string `json:"gameType"`
@@ -32,15 +33,21 @@ func GameUpload(gameUploadRequest *GameUploadRequest) error {
 	// start transcation
 	tx := DB.Begin()
 
+	// get user's name
+	user := new(model.User)
+	if err := tx.Debug().Select("user_name").First(&user, gameUploadRequest.UserID).Error; err != nil {
+		return err
+	}
+
+	// upload a new game
 	game := new(model.Game)
-	game.GameUploader = gameUploadRequest.GameUploader
+	game.GameUploader = user.UserName
 	game.GameImg = gameUploadRequest.GameImg
 	game.GameInfo = gameUploadRequest.GameInfo
 	game.GameName = gameUploadRequest.GameName
 	game.GamePrice = gameUploadRequest.GamePrice
 	game.GameType = gameUploadRequest.GameType
 
-	// upload a new game
 	if err := tx.Create(&game).Error; err != nil {
 		tx.Rollback()
 		return err
@@ -52,7 +59,7 @@ func GameUpload(gameUploadRequest *GameUploadRequest) error {
 		tx.Rollback()
 		return err
 	}
-	tag.GameId = game.GameId
+	tag.GameID = game.GameID
 	tag.GameName = game.GameName
 
 	// Add games to database by types
@@ -66,7 +73,7 @@ func GameUpload(gameUploadRequest *GameUploadRequest) error {
 				return err
 			}
 
-			tag.TagId = ID.TagId
+			tag.TagID = ID.TagID
 
 			if err := tx.Create(&tag).Error; err != nil {
 				tx.Rollback()

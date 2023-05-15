@@ -2,11 +2,9 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"time"
 
 	"example.com/m/v2/module/cart"
 	"example.com/m/v2/module/game"
@@ -85,7 +83,7 @@ func UserLoginHandler(w http.ResponseWriter, r *http.Request) {
 	json.Unmarshal([]byte(body), &userLoginRequest)
 
 	// Call Function
-	err = user.Login(&userLoginRequest)
+	err = user.Login(&userLoginRequest, &userLoginResponse)
 	if err != nil {
 		log.Println(err)
 		userLoginResponse.Status = "SQL Access Error"
@@ -94,10 +92,8 @@ func UserLoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Set Cookie
-	cookie1 := http.Cookie{Name: "userAccount", Value: userLoginRequest.UserAccount, Path: "/", MaxAge: 86400}
-	cookie2 := http.Cookie{Name: "userPassword", Value: userLoginRequest.UserPassword, Path: "/", MaxAge: 86400}
-	http.SetCookie(w, &cookie1)
-	http.SetCookie(w, &cookie2)
+	cookie := http.Cookie{Name: "sessionID", Value: userLoginResponse.UserSessionID, Path: "/", MaxAge: 86400}
+	http.SetCookie(w, &cookie)
 
 	// Return JSON
 	userLoginResponse.Status = "Accepted"
@@ -107,6 +103,7 @@ func UserLoginHandler(w http.ResponseWriter, r *http.Request) {
 // UserLogout
 func UserLogoutHandler(w http.ResponseWriter, r *http.Request) {
 
+	var userLogoutRequest user.UserLogoutRequest
 	var userLogoutResponse user.UserLoginResponse
 
 	// Allow CORS
@@ -124,11 +121,30 @@ func UserLogoutHandler(w http.ResponseWriter, r *http.Request) {
 		user.LogoutOutput(w, &userLogoutResponse)
 	}
 
-	// Set Cookie
-	cookie1 := http.Cookie{Name: "userAccount", Value: "", Path: "/", MaxAge: -1}
-	cookie2 := http.Cookie{Name: "userPassword", Value: "", Path: "/", MaxAge: -1}
-	http.SetCookie(w, &cookie1)
-	http.SetCookie(w, &cookie2)
+	// check cookie
+	if cookie, err := r.Cookie("sessionID"); err != nil {
+		log.Println(err)
+		userLogoutResponse.Status = "Cookie Error"
+		user.LogoutOutput(w, &userLogoutResponse)
+		return
+	} else {
+		// check the session
+		if userID, err := user.CheckSessionID(cookie.Value); err != nil {
+			log.Println(err)
+			return
+		} else {
+			userLogoutRequest.UserID = userID
+		}
+	}
+
+	// Call Function
+	err := user.Logout(&userLogoutRequest)
+	if err != nil {
+		log.Println(err)
+		userLogoutResponse.Status = "SQL Access Error"
+		user.LogoutOutput(w, &userLogoutResponse)
+		return
+	}
 
 	// Return JSON
 	userLogoutResponse.Status = "Accepted"
@@ -138,6 +154,7 @@ func UserLogoutHandler(w http.ResponseWriter, r *http.Request) {
 // View user's Profile
 func UserProfileHandler(w http.ResponseWriter, r *http.Request) {
 
+	var userProfileRequest user.UserProfileRequest
 	var userProflieResponse user.UserProfileResponse
 
 	// Allow CORS
@@ -154,20 +171,26 @@ func UserProfileHandler(w http.ResponseWriter, r *http.Request) {
 		userProflieResponse.Status = "Wrong Method"
 		user.ProfileOutput(w, &userProflieResponse)
 	}
-	// Read Cookie
-	cookie1, err1 := r.Cookie("userAccount")
-	cookie2, err2 := r.Cookie("userPassword")
-	if err1 != nil || err2 != nil {
-		log.Println(err1)
-		log.Println(err2)
-		userProflieResponse.Status = "SQL Access Error"
+	// check cookie
+	if cookie, err := r.Cookie("sessionID"); err != nil {
+		log.Println(err)
+		userProflieResponse.Status = "Cookie Error"
 		user.ProfileOutput(w, &userProflieResponse)
 		return
+	} else {
+		// check the session
+		if userID, err := user.CheckSessionID(cookie.Value); err != nil {
+			log.Println(err)
+			userProflieResponse.Status = "Cookie Error"
+			user.ProfileOutput(w, &userProflieResponse)
+			return
+		} else {
+			userProfileRequest.UserID = userID
+		}
 	}
-	var userLoginRequest = user.UserLoginRequest{UserAccount: cookie1.Value, UserPassword: cookie2.Value}
 
 	// Call Function
-	err := user.Profile(&userLoginRequest, &userProflieResponse)
+	err := user.Profile(&userProfileRequest, &userProflieResponse)
 	if err != nil {
 		log.Println(err)
 		userProflieResponse.Status = "SQL Access Error"
@@ -200,19 +223,21 @@ func UserInventoryHandler(w http.ResponseWriter, r *http.Request) {
 		userInventoryResponse.Status = "Wrong Method"
 		user.InventoryOutput(w, &userInventoryResponse)
 	}
-	// Read Cookie
-	cookie1, err1 := r.Cookie("userAccount")
-	cookie2, err2 := r.Cookie("userPassword")
-	if err1 != nil || err2 != nil {
-		log.Println(err1)
-		log.Println(err2)
-		userInventoryResponse.Status = "SQL Access Error"
+	// check cookie
+	if cookie, err := r.Cookie("sessionID"); err != nil {
+		log.Println(err)
+		userInventoryResponse.Status = "Cookie Error"
 		user.InventoryOutput(w, &userInventoryResponse)
 		return
+	} else {
+		// check the session
+		if userID, err := user.CheckSessionID(cookie.Value); err != nil {
+			log.Println(err)
+			return
+		} else {
+			userInventoryRequest.UserID = userID
+		}
 	}
-
-	userInventoryRequest.UserAccount = cookie1.Value
-	userInventoryRequest.UserPassword = cookie2.Value
 
 	// Call Function
 	err := user.Inventory(&userInventoryRequest, &userInventoryResponse)
@@ -256,21 +281,22 @@ func UserUploadPortraitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	json.Unmarshal([]byte(body), &userUploadPortraitRequest)
 
-	// Read Cookie
-	cookie1, err1 := r.Cookie("userAccount")
-	cookie2, err2 := r.Cookie("userPassword")
-	if err1 != nil || err2 != nil {
-		log.Println(err1)
-		log.Println(err2)
-		userUploadPortraitResponse.Status = "SQL Access Error"
+	// check cookie
+	if cookie, err := r.Cookie("sessionID"); err != nil {
+		log.Println(err)
+		userUploadPortraitResponse.Status = "Cookie Error"
 		user.UploadPortraitOutput(w, &userUploadPortraitResponse)
 		return
+	} else {
+		// check the session
+		if userID, err := user.CheckSessionID(cookie.Value); err != nil {
+			log.Println(err)
+			return
+		} else {
+			userUploadPortraitRequest.UserID = userID
+		}
 	}
 
-	userUploadPortraitRequest.UserAccount = cookie1.Value
-	userUploadPortraitRequest.UserPassword = cookie2.Value
-
-	// fmt.Println(userUploadPortraitRequest)
 	// Call Function
 	err = user.UploadPortrait(&userUploadPortraitRequest)
 	if err != nil {
@@ -313,16 +339,23 @@ func GameUploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	json.Unmarshal([]byte(body), &gameUploadRequest)
 
-	// Read Cookie
-	cookie1, err1 := r.Cookie("userAccount")
-	if err1 != nil {
-		log.Println(err1)
-		gameUploadResponse.Status = "SQL Access Error"
+	// check cookie
+	if cookie, err := r.Cookie("sessionID"); err != nil {
+		log.Println(err)
+		gameUploadResponse.Status = "Cookie Error"
 		game.GameUploadOutput(w, &gameUploadResponse)
 		return
+	} else {
+		// check the session
+		if userID, err := user.CheckSessionID(cookie.Value); err != nil {
+			log.Println(err)
+			gameUploadResponse.Status = "Cookie Error"
+			game.GameUploadOutput(w, &gameUploadResponse)
+			return
+		} else {
+			gameUploadRequest.UserID = userID
+		}
 	}
-
-	gameUploadRequest.GameUploader = cookie1.Value
 
 	// Call Function
 	err = game.GameUpload(&gameUploadRequest)
@@ -411,8 +444,6 @@ func GameBrowserHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// fmt.Println(gameIndexResponse)
-
 	// Return JSON
 	gameBrowserResponse.Status = "Accepted"
 	game.GameBrowserOutput(w, &gameBrowserResponse)
@@ -446,16 +477,17 @@ func GameDetailsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	json.Unmarshal([]byte(body), &gameDetailsRequest)
 
-	// Read Cookie
-	cookie1, err1 := r.Cookie("userAccount")
-	cookie2, err2 := r.Cookie("userPassword")
-	if err1 != nil || err2 != nil {
-		log.Println(err1)
-		log.Println(err2)
-		return
+	// check cookie (can access game info without session)
+	if cookie, err := r.Cookie("sessionID"); err != nil {
+		log.Println(err)
+	} else {
+		// check the session
+		if userID, err := user.CheckSessionID(cookie.Value); err != nil {
+			log.Println(err)
+		} else {
+			gameDetailsRequest.UserID = userID
+		}
 	}
-	gameDetailsRequest.UserAccount = cookie1.Value
-	gameDetailsRequest.UserPassword = cookie2.Value
 
 	// Call Function
 	err = game.GameDetails(&gameDetailsRequest, &gameDetailsResponse)
@@ -466,10 +498,9 @@ func GameDetailsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// fmt.Println(gameIndexResponse)
-
 	// Return JSON
 	gameDetailsResponse.Status = "Accepted"
+
 	game.GameDetailsOutput(w, &gameDetailsResponse)
 }
 
@@ -501,19 +532,23 @@ func CartUploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	json.Unmarshal([]byte(body), &cartUploadRequest)
 
-	// Read Cookie
-	cookie1, err1 := r.Cookie("userAccount")
-	cookie2, err2 := r.Cookie("userPassword")
-	if err1 != nil || err2 != nil {
-		log.Println(err1)
-		log.Println(err2)
+	// check cookie
+	if cookie, err := r.Cookie("sessionID"); err != nil {
+		log.Println(err)
+		cartUploadResponse.Status = "Cookie Error"
+		cart.CartUploadOutput(w, &cartUploadResponse)
 		return
+	} else {
+		// check the session
+		if userID, err := user.CheckSessionID(cookie.Value); err != nil {
+			log.Println(err)
+			cartUploadResponse.Status = "Cookie Error"
+			cart.CartUploadOutput(w, &cartUploadResponse)
+			return
+		} else {
+			cartUploadRequest.UserID = userID
+		}
 	}
-	cartUploadRequest.UserAccount = cookie1.Value
-	cartUploadRequest.UserPassword = cookie2.Value
-	cartUploadRequest.CartDateAdded = time.Now().String()
-
-	fmt.Println(cartUploadRequest)
 
 	// Call Function
 	err = cart.CartUpload(&cartUploadRequest)
@@ -559,18 +594,23 @@ func CartBrowserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	json.Unmarshal([]byte(body), &cartBrowserResqust)
 
-	// Read Cookie
-	cookie1, err1 := r.Cookie("userAccount")
-	cookie2, err2 := r.Cookie("userPassword")
-	if err1 != nil || err2 != nil {
-		log.Println(err1)
-		log.Println(err2)
+	// check cookie
+	if cookie, err := r.Cookie("sessionID"); err != nil {
+		log.Println(err)
+		cartBrowserResponse.Status = "Cookie Error"
+		cart.CartBrowserOutput(w, &cartBrowserResponse)
 		return
+	} else {
+		// check the session
+		if userID, err := user.CheckSessionID(cookie.Value); err != nil {
+			log.Println(err)
+			cartBrowserResponse.Status = "Cookie Error"
+			cart.CartBrowserOutput(w, &cartBrowserResponse)
+			return
+		} else {
+			cartBrowserResqust.UserID = userID
+		}
 	}
-	cartBrowserResqust.UserAccount = cookie1.Value
-	cartBrowserResqust.UserPassword = cookie2.Value
-
-	// fmt.Println(cartBrowserResqust)
 
 	// Call Function
 	err = cart.CartBrowser(&cartBrowserResqust, &cartBrowserResponse)
@@ -616,16 +656,23 @@ func CartRemoveHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	json.Unmarshal([]byte(body), &cartRemoveRequest)
 
-	// Read Cookie
-	cookie1, err1 := r.Cookie("userAccount")
-	cookie2, err2 := r.Cookie("userPassword")
-	if err1 != nil || err2 != nil {
-		log.Println(err1)
-		log.Println(err2)
+	// check cookie
+	if cookie, err := r.Cookie("sessionID"); err != nil {
+		log.Println(err)
+		cartRemoveResponse.Status = "Cookie Error"
+		cart.CartRemoveOutput(w, &cartRemoveResponse)
 		return
+	} else {
+		// check the session
+		if userID, err := user.CheckSessionID(cookie.Value); err != nil {
+			log.Println(err)
+			cartRemoveResponse.Status = "Cookie Error"
+			cart.CartRemoveOutput(w, &cartRemoveResponse)
+			return
+		} else {
+			cartRemoveRequest.UserID = userID
+		}
 	}
-	cartRemoveRequest.UserAccount = cookie1.Value
-	cartRemoveRequest.UserPassword = cookie2.Value
 
 	// Call Function
 	err = cart.CartRemove(&cartRemoveRequest)
@@ -671,16 +718,23 @@ func CartCheckHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	json.Unmarshal([]byte(body), &cartCheckRequest)
 
-	// Read Cookie
-	cookie1, err1 := r.Cookie("userAccount")
-	cookie2, err2 := r.Cookie("userPassword")
-	if err1 != nil || err2 != nil {
-		log.Println(err1)
-		log.Println(err2)
+	// check cookie
+	if cookie, err := r.Cookie("sessionID"); err != nil {
+		log.Println(err)
+		cartCheckResponse.Status = "Cookie Error"
+		cart.CartCheckOutput(w, &cartCheckResponse)
 		return
+	} else {
+		// check the session
+		if userID, err := user.CheckSessionID(cookie.Value); err != nil {
+			log.Println(err)
+			cartCheckResponse.Status = "Cookie Error"
+			cart.CartCheckOutput(w, &cartCheckResponse)
+			return
+		} else {
+			cartCheckRequest.UserID = userID
+		}
 	}
-	cartCheckRequest.UserAccount = cookie1.Value
-	cartCheckRequest.UserPassword = cookie2.Value
 
 	// fmt.Println(cartRemoveRequest)
 

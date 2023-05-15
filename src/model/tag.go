@@ -1,8 +1,8 @@
 package model
 
 type Tag struct {
-	TagId    int64  `gorm:"column:tag_id;AUTO_INCREMENT;" json:"tagId"`
-	GameId   int64  `gorm:"column:game_id;" json:"gameId"`
+	TagID    int64  `gorm:"column:tag_id;AUTO_INCREMENT;" json:"tagID"`
+	GameID   int64  `gorm:"column:game_id;" json:"gameID"`
 	GameName string `gorm:"column:game_name;" json:"gameName"`
 	TagName  string `gorm:"column:tag_name;" json:"tagName"`
 }

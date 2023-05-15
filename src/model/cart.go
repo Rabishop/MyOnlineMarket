@@ -1,8 +1,8 @@
 package model
 
 type Cart struct {
-	UserId        int64  `gorm:"column:user_id;" json:"userId"`
-	GameId        int64  `gorm:"column:game_id;" json:"gameId"`
+	UserID        int64  `gorm:"column:user_id;" json:"userID"`
+	GameID        int64  `gorm:"column:game_id;" json:"gameID"`
 	CartDateAdded string `gorm:"column:cart_date_added;" json:"cartDateAdded"`
 }
 

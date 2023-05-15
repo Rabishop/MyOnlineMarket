@@ -1,7 +1,7 @@
 package model
 
 type User struct {
-	UserId       int64  `gorm:"column:user_id;AUTO_INCREMENT;" json:"userId"`
+	UserID       int64  `gorm:"column:user_id;AUTO_INCREMENT;" json:"userID"`
 	UserAccount  string `gorm:"column:user_account;" json:"userAccount"`
 	UserPassword string `gorm:"column:user_password;" json:"userPassword"`
 	UserName     string `gorm:"column:user_name;" json:"userName"`
@@ -9,7 +9,7 @@ type User struct {
 }
 
 type UserID struct {
-	UserId int64 `gorm:"column:user_id;AUTO_INCREMENT;" json:"userId"`
+	UserID int64 `gorm:"column:user_id;AUTO_INCREMENT;" json:"userID"`
 }
 
 // Return TableName

@@ -55,7 +55,7 @@ func GameIndex(gameIndexResponse *GameIndexResponse) error {
 		}
 
 		item := new(model.Game)
-		if err := tx.Where("game_id = ?", gameList[i].GameId).Take(item).Error; err != nil {
+		if err := tx.Where("game_id = ?", gameList[i].GameID).Take(item).Error; err != nil {
 			tx.Rollback()
 			return err
 		}

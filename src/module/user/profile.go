@@ -9,7 +9,10 @@ import (
 	"example.com/m/v2/model"
 )
 
-// UserLoginResponse struct
+type UserProfileRequest struct {
+	UserID int64 `json:"userID"`
+}
+
 type UserProfileResponse struct {
 	Status        string `json:"status"`
 	UserName      string `json:"userName"`
@@ -17,19 +20,16 @@ type UserProfileResponse struct {
 	UserPortrait  string `json:"userPortrait"`
 }
 
-// UserLoginResponse struct
 type UserUploadPortraitRequest struct {
-	UserAccount  string `json:"userAccount"`
-	UserPassword string `json:"userPassword"`
+	UserID       int64  `json:"userID"`
 	UserPortrait string `json:"userPortrait"`
 }
 
-// UserLoginResponse struct
 type UserUploadPortraitResponse struct {
 	Status string `json:"status"`
 }
 
-func Profile(userLoginRequest *UserLoginRequest, userProfileResponse *UserProfileResponse) error {
+func Profile(userProfileRequest *UserProfileRequest, userProfileResponse *UserProfileResponse) error {
 
 	// connect database
 	DB := model.MysqlConn()
@@ -38,11 +38,9 @@ func Profile(userLoginRequest *UserLoginRequest, userProfileResponse *UserProfil
 	tx := DB.Begin()
 
 	var user model.User
-	user.UserAccount = userLoginRequest.UserAccount
-	user.UserPassword = userLoginRequest.UserPassword
 
 	// get user's profile
-	if err := tx.Where("user_account = ? AND user_password = ?", user.UserAccount, user.UserPassword).Take(&user).Error; err != nil {
+	if err := tx.Where("user_id = ?", userProfileRequest.UserID).Take(&user).Error; err != nil {
 		tx.Rollback()
 		return err
 	}
@@ -72,11 +70,8 @@ func UploadPortrait(userUploadPortraitRequest *UserUploadPortraitRequest) error 
 	// start transcation
 	tx := DB.Begin()
 
-	var user model.User
-	user.UserAccount = userUploadPortraitRequest.UserAccount
-	user.UserPassword = userUploadPortraitRequest.UserPassword
-
-	if err := tx.Where("user_account = ? AND user_password = ?", user.UserAccount, user.UserPassword).Model(&user).Update("user_portrait", userUploadPortraitRequest.UserPortrait).Error; err != nil {
+	// get user's profile
+	if err := tx.Table("user").Where("user_id = ?", userUploadPortraitRequest.UserID).Update("user_portrait", userUploadPortraitRequest.UserPortrait).Error; err != nil {
 		tx.Rollback()
 		return err
 	}

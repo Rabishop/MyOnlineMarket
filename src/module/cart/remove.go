@@ -11,9 +11,8 @@ import (
 
 // CartRemoveRequest struct
 type CartRemoveRequest struct {
-	UserAccount  string `json:"userAccount"`
-	UserPassword string `json:"userPassword"`
-	GameId       int64  `json:"gameId"`
+	UserID int64 `json:"userID"`
+	GameID int64 `json:"gameID"`
 }
 
 // CartRemoveResponse struct
@@ -29,23 +28,12 @@ func CartRemove(cartRemoveRequest *CartRemoveRequest) error {
 	// start transcation
 	tx := DB.Begin()
 
-	var user model.User
-	var userID model.UserID
-	user.UserAccount = cartRemoveRequest.UserAccount
-	user.UserPassword = cartRemoveRequest.UserPassword
-
-	// get userID
-	if err := tx.Model(&user).Where("user_account = ? AND user_password = ?", user.UserAccount, user.UserPassword).Take(&userID).Error; err != nil {
-		tx.Rollback()
-		return err
-	}
-
 	cart := new(model.Cart)
-	cart.UserId = userID.UserId
-	cart.GameId = cartRemoveRequest.GameId
+	cart.UserID = cartRemoveRequest.UserID
+	cart.GameID = cartRemoveRequest.GameID
 
 	// Delete games
-	if err := tx.Where("user_id = ? AND game_id = ?", cart.UserId, cart.GameId).Delete(&cart).Error; err != nil {
+	if err := tx.Where("user_id = ? AND game_id = ?", cart.UserID, cart.GameID).Delete(&cart).Error; err != nil {
 		tx.Rollback()
 		return err
 	}

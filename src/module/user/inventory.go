@@ -18,8 +18,7 @@ type UserInventoryResponse struct {
 
 // UserInventoryRequest struct
 type UserInventoryRequest struct {
-	UserAccount  string `json:"userAccount"`
-	UserPassword string `json:"userPassword"`
+	UserID int64 `json:"userID"`
 }
 
 func Inventory(userInventoryRequest *UserInventoryRequest, userInventoryResponse *UserInventoryResponse) error {
@@ -30,26 +29,16 @@ func Inventory(userInventoryRequest *UserInventoryRequest, userInventoryResponse
 	// start transcation
 	tx := DB.Begin()
 
-	var user model.User
-	var userID model.UserID
-	user.UserAccount = userInventoryRequest.UserAccount
-	user.UserPassword = userInventoryRequest.UserPassword
 	gameItem := new(model.Game)
 
-	// get userID
-	if err := tx.Model(&user).Where("user_account = ? AND user_password = ?", user.UserAccount, user.UserPassword).Take(&userID).Error; err != nil {
-		tx.Rollback()
-		return err
-	}
-
 	// get user's games
-	if err := tx.Where("user_id = ?", userID.UserId).Find(&userInventoryResponse.GameList).Error; err != nil {
+	if err := tx.Where("user_id = ?", userInventoryRequest.UserID).Find(&userInventoryResponse.GameList).Error; err != nil {
 		tx.Rollback()
 		return err
 	}
 
 	for i := 0; i < len(userInventoryResponse.GameList); i++ {
-		if err := tx.Where("game_id = ?", userInventoryResponse.GameList[i].GameId).Take(&gameItem).Error; err != nil {
+		if err := tx.Where("game_id = ?", userInventoryResponse.GameList[i].GameID).Take(&gameItem).Error; err != nil {
 			tx.Rollback()
 			return err
 		}
