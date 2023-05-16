@@ -261,7 +261,6 @@ function getGameDetails() {
         console.log(response)
 
         if (response["status"] == "Accepted") {
-            console.log(response)
 
             document.getElementById("gameID").innerText = response["gameItem"]["gameID"];
             document.getElementById("gamePortrait").src = response["gameItem"]["gameImg"];

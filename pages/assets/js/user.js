@@ -97,8 +97,11 @@ function login() {
 
   $.ajax(settings).done(function (response) {
     if (response["status"] == "Accepted") {
+
       alert("Login in Success!");
-      window.location.href = 'index';
+
+      syncCart()
+
     } else {
       document.getElementById("loginError").innerHTML =
         "Wrong Username or Password";
@@ -120,11 +123,15 @@ function logout() {
 
   $.ajax(settings).done(function (response) {
     if (response["status"] == "Accepted") {
+
+      localStorage.clear();
+      document.cookie = 'sessionID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      document.cookie = ' xsrf=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+
       alert("Logout success!")
     } else {
       alert("Logout fali!")
     }
-
     console.log(response);
   });
 }
@@ -158,27 +165,6 @@ function profileload() {
     }
   });
 }
-
-// function indexload() {
-//   var settings = {
-//     "url": "http://localhost:8080/user/profile",
-//     "method": "POST",
-//     "timeout": 0,
-//     "headers": {
-//       "Content-Type": "application/json",
-//     },
-//   };
-
-//   $.ajax(settings).done(function (response) {
-//     if (response["status"] == "Accepted") {
-//     } else {
-//       alert("Please log in first!")
-//       window.location.href = 'login';
-//     }
-
-//     console.log(response);
-//   });
-// }
 
 function getInventory() {
 
