@@ -628,6 +628,52 @@ func CartBrowserHandler(w http.ResponseWriter, r *http.Request) {
 	cart.CartBrowserOutput(w, &cartBrowserResponse)
 }
 
+// View the cart
+func CartBrowserTempHandler(w http.ResponseWriter, r *http.Request) {
+
+	var cartBrowserTempResqust cart.CartBrowserTempRequest
+	var cartBrowserTempResponse cart.CartBrowserTempResponse
+
+	// Allow CORS
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("content-type", "application/json")
+
+	// Check Method
+	if r.Method == "OPTIONS" {
+		return
+	}
+
+	if r.Method != "POST" {
+		cartBrowserTempResponse.Status = "Wrong Method"
+		cart.CartBrowserTempOutput(w, &cartBrowserTempResponse)
+	}
+
+	// Read Body
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Println(err)
+	}
+	json.Unmarshal([]byte(body), &cartBrowserTempResqust)
+
+	// fmt.Println(cartBrowserTempResqust)
+
+	// Call Function
+	err = cart.CartBrowserTemp(&cartBrowserTempResqust, &cartBrowserTempResponse)
+	if err != nil {
+		log.Println(err)
+		cartBrowserTempResponse.Status = "SQL Access Error"
+		cart.CartBrowserTempOutput(w, &cartBrowserTempResponse)
+		return
+	}
+
+	// fmt.Println(gameIndexResponse)
+
+	// Return JSON
+	cartBrowserTempResponse.Status = "Accepted"
+	cart.CartBrowserTempOutput(w, &cartBrowserTempResponse)
+}
+
 // Remove games from a cart
 func CartRemoveHandler(w http.ResponseWriter, r *http.Request) {
 
@@ -688,6 +734,74 @@ func CartRemoveHandler(w http.ResponseWriter, r *http.Request) {
 	// Return JSON
 	cartRemoveResponse.Status = "Accepted"
 	cart.CartRemoveOutput(w, &cartRemoveResponse)
+}
+
+// Cart synchronization
+func CartSyncHandler(w http.ResponseWriter, r *http.Request) {
+
+	var cartSyncRequest cart.CartSyncRequest
+	var cartSyncResponse cart.CartSyncResponse
+
+	// Allow CORS
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("content-type", "application/json")
+
+	// Check Method
+	if r.Method == "OPTIONS" {
+		return
+	}
+
+	if r.Method != "POST" {
+		cartSyncResponse.Status = "Wrong Method"
+		cart.CartSyncOutput(w, &cartSyncResponse)
+	}
+
+	// Read Body
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Println(err)
+	}
+	json.Unmarshal([]byte(body), &cartSyncRequest)
+
+	// check cookie
+	if cookie, err := r.Cookie("sessionID"); err != nil {
+		log.Println(err)
+		cartSyncResponse.Status = "Cookie Error"
+		cart.CartSyncOutput(w, &cartSyncResponse)
+		return
+	} else {
+		// check the session
+		if userID, err := user.CheckSessionID(cookie.Value); err != nil {
+			log.Println(err)
+			cartSyncResponse.Status = "Cookie Error"
+			cart.CartSyncOutput(w, &cartSyncResponse)
+			return
+		} else {
+			cartSyncRequest.UserID = userID
+		}
+	}
+
+	// fmt.Println(cartSyncRequest.GameID)
+	// fmt.Println(cartSyncRequest.CartDateAdded)
+
+	// Call Function
+	if len(cartSyncRequest.GameID) > 0 {
+		err = cart.CartSync(&cartSyncRequest)
+		if err != nil {
+			log.Println(err)
+			cartSyncResponse.Status = "SQL Access Error"
+			cart.CartSyncOutput(w, &cartSyncResponse)
+			return
+		}
+		cartSyncResponse.Status = "CartSync"
+		cart.CartSyncOutput(w, &cartSyncResponse)
+	} else {
+		// Return JSON
+		cartSyncResponse.Status = "Accepted"
+		cart.CartSyncOutput(w, &cartSyncResponse)
+	}
+
 }
 
 // Add games to a inventory and Remove games from the cart
@@ -782,7 +896,11 @@ func main() {
 
 	http.HandleFunc("/cart/browser", CartBrowserHandler)
 
+	http.HandleFunc("/cart/browserTemp", CartBrowserTempHandler)
+
 	http.HandleFunc("/cart/remove", CartRemoveHandler)
+
+	http.HandleFunc("/cart/sync", CartSyncHandler)
 
 	http.HandleFunc("/cart/check", CartCheckHandler)
 
