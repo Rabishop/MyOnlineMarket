@@ -35,7 +35,7 @@ func GameUpload(gameUploadRequest *GameUploadRequest) error {
 
 	// get user's name
 	user := new(model.User)
-	if err := tx.Debug().Select("user_name").First(&user, gameUploadRequest.UserID).Error; err != nil {
+	if err := tx.Select("user_name").First(&user, gameUploadRequest.UserID).Error; err != nil {
 		return err
 	}
 
