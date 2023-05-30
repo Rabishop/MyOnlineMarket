@@ -126,7 +126,6 @@ function logout() {
 
       localStorage.clear();
       document.cookie = 'sessionID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-      document.cookie = ' xsrf=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
 
       alert("Logout success!")
     } else {
