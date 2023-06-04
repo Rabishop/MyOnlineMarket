@@ -11,7 +11,8 @@ import (
 	"net/http"
 	"time"
 
-	"example.com/m/v2/model"
+	"example.com/m/model"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
