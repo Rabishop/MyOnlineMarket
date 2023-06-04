@@ -6,9 +6,9 @@ import (
 	"log"
 	"net/http"
 
-	"example.com/m/v2/module/cart"
-	"example.com/m/v2/module/game"
-	"example.com/m/v2/module/user"
+	"example.com/m/module/cart"
+	"example.com/m/module/game"
+	"example.com/m/module/user"
 )
 
 // UserRegist
@@ -909,7 +909,11 @@ func main() {
 	http.Handle("/vendor/", http.StripPrefix("/vendor/", http.FileServer(http.Dir("../pages/vendor"))))
 
 	http.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "../pages/"+r.URL.Path+".html")
+		if r.URL.Path == "/" {
+			http.ServeFile(w, r, "../pages/index.html")
+		} else {
+			http.ServeFile(w, r, "../pages/"+r.URL.Path+".html")
+		}
 	}))
 
 	// Build the Server
