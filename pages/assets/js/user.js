@@ -159,8 +159,11 @@ function profileload() {
         document.getElementById("userPortrait").src = response["userPortrait"];
 
     } else {
+
       alert("Please log in first!")
+
       window.location.href = 'login';
+
     }
   });
 }
@@ -217,7 +220,9 @@ function getInventory() {
       }
 
     } else {
-      alert("Fail!")
+
+      // alert("Fail!")
+
     }
 
   });
