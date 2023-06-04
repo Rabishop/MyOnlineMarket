@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"example.com/m/v2/model"
+	"example.com/m/model"
 )
 
 // CartBrowerResponse struct
