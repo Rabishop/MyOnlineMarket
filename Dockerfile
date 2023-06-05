@@ -6,6 +6,9 @@ WORKDIR $MYPATH
 ADD ./pages ./pages
 ADD ./src ./src
 
+WORKDIR /usr/local/src
+RUN go build -o my-online-market-app main.go
+
 EXPOSE 8080
 
-CMD ./src/my-online-market
+CMD ./my-online-market-app
