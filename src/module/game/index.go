@@ -49,6 +49,11 @@ func GameIndex(gameIndexResponse *GameIndexResponse) error {
 			tagNow = gameList[i].TagName
 
 			if i != 0 {
+
+				if tempList[tagCount].GameItem[0].GameID == 0 {
+					continue
+				}
+
 				gameIndexResponse.GameIndex = append(gameIndexResponse.GameIndex, tempList[tagCount])
 			}
 			tagCount++
