@@ -357,7 +357,7 @@ function checkCart() {
 
             document.getElementById('totalPrice').innerHTML = totalPrice
 
-            // window.location.href = 'payment';
+            window.location.href = 'payment';
 
         } else {
             alert("Please Login in first!");
