@@ -918,5 +918,10 @@ func main() {
 
 	// Build the Server
 
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":80", nil)
+
+	// err := http.ListenAndServeTLS(":443", "../secret/certificate.crt", "../secret/private.key", nil)
+	// if err != nil {
+	// 	panic(err)
+	// }
 }
