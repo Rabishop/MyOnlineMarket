@@ -1,6 +1,8 @@
 package model
 
 import (
+	"log"
+
 	_ "github.com/go-sql-driver/mysql"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -14,13 +16,13 @@ func MysqlConn() *gorm.DB {
 	Username := "root"
 	Password := "kurumi9452"
 	Protocol := "tcp"
-	Address := "127.0.0.1:3306"
-	Dbname := "onlinemarket"
+	Address := "mysql:3306"
+	Dbname := "my_online_market"
 
 	dsn := Username + ":" + Password + "@" + Protocol + "(" + Address + ")" + "/" + Dbname
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{NamingStrategy: schema.NamingStrategy{SingularTable: true}})
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	// 设置数据库连接池参数
 	sqlDB, _ := db.DB()
