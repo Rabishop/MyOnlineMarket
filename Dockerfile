@@ -11,4 +11,4 @@ RUN go build -o my-online-market-app main.go
 
 EXPOSE 8080
 
-# CMD ./my-online-market-app
+CMD ./my-online-market-app
