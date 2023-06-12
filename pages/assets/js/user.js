@@ -39,7 +39,7 @@ function regist() {
 
 
   var settings = {
-    "url": "http://" + window.location.host + "/user/regist",
+    "url": "https://" + window.location.host + "/user/regist",
     "method": "POST",
     "timeout": 0,
     "headers": {
@@ -83,7 +83,7 @@ function login() {
   }
 
   var settings = {
-    "url": "http://" + window.location.host + "/user/login",
+    "url": "https://" + window.location.host + "/user/login",
     "method": "POST",
     "timeout": 0,
     "headers": {
@@ -113,7 +113,7 @@ function login() {
 
 function logout() {
   var settings = {
-    "url": "http://" + window.location.host + "/user/logout",
+    "url": "https://" + window.location.host + "/user/logout",
     "method": "POST",
     "timeout": 0,
     "headers": {
@@ -138,7 +138,7 @@ function logout() {
 function profileload() {
 
   var settings = {
-    "url": "http://" + window.location.host + "/user/profile",
+    "url": "https://" + window.location.host + "/user/profile",
     "method": "POST",
     "timeout": 0,
     "headers": {
@@ -171,7 +171,7 @@ function profileload() {
 function getInventory() {
 
   var settings = {
-    "url": "http://" + window.location.host + "/user/inventory",
+    "url": "https://" + window.location.host + "/user/inventory",
     "method": "POST",
     "timeout": 0,
     "headers": {
@@ -231,7 +231,7 @@ function getInventory() {
 function getHistory() {
 
   var settings = {
-    "url": "http://" + window.location.host + "/user/inventory",
+    "url": "https://" + window.location.host + "/user/inventory",
     "method": "POST",
     "timeout": 0,
     "headers": {
