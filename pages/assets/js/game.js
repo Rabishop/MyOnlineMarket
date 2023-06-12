@@ -13,7 +13,7 @@ function uploadGame() {
     }
 
     var settings = {
-        "url": "https://" + window.location.host + "/game/upload",
+        "url": "http://" + window.location.host + "/game/upload",
         "method": "POST",
         "timeout": 0,
         "headers": {
@@ -41,7 +41,7 @@ function uploadGame() {
 
 function getGameIndex() {
     var settings = {
-        "url": "https://" + window.location.host + "/game/index",
+        "url": "http://" + window.location.host + "/game/index",
         "method": "POST",
         "timeout": 0,
         "headers": {
@@ -179,7 +179,7 @@ function getGameBrowse() {
     header.innerText = gameType
 
     var settings = {
-        "url": "https://" + window.location.host + "/game/browser",
+        "url": "http://" + window.location.host + "/game/browser",
         "method": "POST",
         "timeout": 0,
         "headers": {
@@ -245,7 +245,7 @@ function getGameDetails() {
     header1.innerText = gameName
 
     var settings = {
-        "url": "https://" + window.location.host + "/game/details",
+        "url": "http://" + window.location.host + "/game/details",
         "method": "POST",
         "timeout": 0,
         "headers": {
