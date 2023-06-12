@@ -3,7 +3,7 @@ function uploadCart() {
     var gameID = Number(document.getElementById('gameID').innerHTML);
 
     var settings = {
-        "url": "https://" + window.location.host + "/cart/upload",
+        "url": "http://" + window.location.host + "/cart/upload",
         "method": "POST",
         "timeout": 0,
         "headers": {
@@ -76,7 +76,7 @@ function uploadTempCart() {
 function browserCart() {
 
     var settings = {
-        "url": "https://" + window.location.host + "/cart/browser",
+        "url": "http://" + window.location.host + "/cart/browser",
         "method": "POST",
         "timeout": 0,
         "headers": {
@@ -182,7 +182,7 @@ function browserTempCart() {
     console.log(tempCart)
 
     var settings = {
-        "url": "https://" + window.location.host + "/cart/browserTemp",
+        "url": "http://" + window.location.host + "/cart/browserTemp",
         "method": "POST",
         "timeout": 0,
         "headers": {
@@ -280,7 +280,7 @@ function removeCart(buttonId) {
     console.log(gameID)
 
     var settings = {
-        "url": "https://" + window.location.host + "/cart/remove",
+        "url": "http://" + window.location.host + "/cart/remove",
         "method": "POST",
         "timeout": 0,
         "headers": {
@@ -317,7 +317,7 @@ function removeCart(buttonId) {
 function checkCart() {
 
     var settings = {
-        "url": "https://" + window.location.host + "/cart/browser",
+        "url": "http://" + window.location.host + "/cart/browser",
         "method": "POST",
         "timeout": 0,
         "headers": {
@@ -370,7 +370,7 @@ function checkCart() {
 function checkPayment() {
 
     var settings = {
-        "url": "https://" + window.location.host + "/cart/check",
+        "url": "http://" + window.location.host + "/cart/check",
         "method": "POST",
         "timeout": 0,
         "headers": {
@@ -414,7 +414,7 @@ function syncCart() {
 
 
     var settings = {
-        "url": "https://" + window.location.host + "/cart/sync",
+        "url": "http://" + window.location.host + "/cart/sync",
         "method": "POST",
         "timeout": 0,
         "headers": {
