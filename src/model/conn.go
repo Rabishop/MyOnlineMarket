@@ -14,8 +14,8 @@ func MysqlConn() *gorm.DB {
 	Username := "root"
 	Password := "kurumi9452"
 	Protocol := "tcp"
-	Address := "mysql:3306"
-	Dbname := "my_online_market"
+	Address := "127.0.0.1:3306"
+	Dbname := "onlineMarket"
 
 	dsn := Username + ":" + Password + "@" + Protocol + "(" + Address + ")" + "/" + Dbname
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{NamingStrategy: schema.NamingStrategy{SingularTable: true}})
