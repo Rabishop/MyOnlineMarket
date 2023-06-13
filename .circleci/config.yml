@@ -13,6 +13,13 @@ jobs:
       - image: circleci/golang:1.16
     # Add steps to the job
     # See: https://circleci.com/docs/configuration-reference/#steps
+
+    filters:
+      paths:
+        only:
+          - src/**
+            pages/**
+
     steps:
       - checkout
       - setup_remote_docker:
@@ -39,10 +46,6 @@ jobs:
           command: |
             docker push us-central1-docker.pkg.dev/my-online-market-388401/hello-repo/my-online-market-app:circleci
 
-filters:
-  paths:
-    ignore:
-      - "k8s/**"
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
@@ -50,5 +53,4 @@ workflows:
   sample: # This is the name of the workflow, feel free to change it to better match your workflow.
     # Inside the workflow, you define the jobs you want to run.
     jobs:
-      - filters
-        build
+      - build
