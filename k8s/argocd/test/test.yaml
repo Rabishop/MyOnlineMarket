@@ -1,19 +1,10 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Pod
 metadata:
-  name: hello-world-deployment
+  name: private-reg
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: hello-world
-  template:
-    metadata:
-      labels:
-        app: hello-world
-    spec:
-      containers:
-        - name: hello-world
-          image: hello-world
-          ports:
-            - containerPort: 8080
+  containers:
+  - name: private-reg-container
+    image: us-central1-docker.pkg.dev/my-online-market-388401/hello-repo/my-online-market-app:circleci
+  imagePullSecrets:
+  - name: ar-secret
