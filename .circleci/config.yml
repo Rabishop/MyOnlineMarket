@@ -39,6 +39,11 @@ jobs:
           command: |
             docker push us-central1-docker.pkg.dev/my-online-market-388401/hello-repo/my-online-market-app:circleci
 
+filters:
+  paths:
+    ignore:
+      - "k8s/**"
+
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
