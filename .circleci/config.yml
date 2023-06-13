@@ -12,13 +12,7 @@ jobs:
     docker:
       - image: circleci/golang:1.16
     # Add steps to the job
-    # See: https://circleci.com/docs/configuration-reference/#steps
-
-    filters:
-      paths:
-        only:
-          - src/**
-            pages/**
+    # See: https://circleci.com/docs/configuration-reference/#stepss
 
     steps:
       - checkout
