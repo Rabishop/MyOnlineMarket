@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: my-online-market-app
-        image: us-central1-docker.pkg.dev/my-online-market-388401/hello-repo/my-online-market-app:1.6
+        image: us-central1-docker.pkg.dev/my-online-market-388401/hello-repo/my-online-market-app:circleci
         ports:
         - containerPort: 8080
         env:
