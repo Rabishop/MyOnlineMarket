@@ -20,6 +20,18 @@ jobs:
           version: 20.10.7
 
       - run:
+          name: Check for changes
+          command: |
+            CHANGED_FILES=$(git diff --name-only HEAD^ HEAD -- src/ pages/)
+            if [[ -z "$CHANGED_FILES" ]]; then
+              echo "No changes in src/ or pages/ directory. Exiting job."
+              circleci step halt
+            else
+              echo "Changes detected in src/ or pages/ directory. Continuing job."
+              # Continue with the rest of the job steps
+            fi
+
+      - run:
           name: Docker login
           command: |
             docker login -u moyuno1 -p kurumi9452
@@ -39,7 +51,6 @@ jobs:
           name: Upload image
           command: |
             docker push us-central1-docker.pkg.dev/my-online-market-388401/hello-repo/my-online-market-app:circleci
-
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
