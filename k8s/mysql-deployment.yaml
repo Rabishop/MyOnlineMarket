@@ -46,7 +46,7 @@ spec:
         - name: MYSQL_ROOT_PASSWORD
           value: kurumi9452
         ports:
-        - containerPort: 3306
+        - containerPort: 3307
           name: mysql
         volumeMounts:
         - name: pvc-demo-vol
