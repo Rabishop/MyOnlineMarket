@@ -13,6 +13,8 @@ jobs:
       - image: circleci/golang:1.16
     # Add steps to the job
     # See: https://circleci.com/docs/configuration-reference/#stepss
+    environment:
+      APP_VERSION: 1.0.4
 
     steps:
       - checkout
@@ -38,7 +40,7 @@ jobs:
       - run:
           name: Create image
           command: |
-            docker build -t us-central1-docker.pkg.dev/my-online-market-388401/hello-repo/my-online-market-app:process.env.VERSION .
+            docker build -t us-central1-docker.pkg.dev/my-online-market-388401/hello-repo/my-online-market-app:$APP_VERSION .
 
       - run:
           name: AR login
@@ -49,7 +51,7 @@ jobs:
       - run:
           name: Upload image
           command: |
-            docker push us-central1-docker.pkg.dev/my-online-market-388401/hello-repo/my-online-market-app:process.env.VERSION
+            docker push us-central1-docker.pkg.dev/my-online-market-388401/hello-repo/my-online-market-app:$APP_VERSION
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
