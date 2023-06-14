@@ -33,17 +33,17 @@ jobs:
             echo "New Version: $NEW_VERSION"
             echo "VERSION=$NEW_VERSION" >> $BASH_ENV
             source $BASH_ENV
-      # - run:
-      #     name: Check for changes
-      #     command: |
-      #       CHANGED_FILES=$(git diff --name-only HEAD^ HEAD -- src/ pages/)
-      #       if [[ -z "$CHANGED_FILES" ]]; then
-      #         echo "No changes in src/ or pages/ directory. Exiting job."
-      #         circleci step halt
-      #       else
-      #         echo "Changes detected in src/ or pages/ directory. Continuing job."
-      #         # Continue with the rest of the job steps
-      #       fi
+      - run:
+          name: Check for changes
+          command: |
+            CHANGED_FILES=$(git diff --name-only HEAD^ HEAD -- src/ pages/)
+            if [[ -z "$CHANGED_FILES" ]]; then
+              echo "No changes in src/ or pages/ directory. Exiting job."
+              circleci step halt
+            else
+              echo "Changes detected in src/ or pages/ directory. Continuing job."
+              # Continue with the rest of the job steps
+            fi
 
       - run:
           name: Docker login
