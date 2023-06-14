@@ -18,6 +18,17 @@ jobs:
       - checkout
       - setup_remote_docker:
           version: 20.10.7
+      # - run:
+      #     name: Check for changes
+      #     command: |
+      #       CHANGED_FILES=$(git diff --name-only HEAD^ HEAD -- src/ pages/)
+      #       if [[ -z "$CHANGED_FILES" ]]; then
+      #         echo "No changes in src/ or pages/ directory. Exiting job."
+      #         circleci step halt
+      #       else
+      #         echo "Changes detected in src/ or pages/ directory. Continuing job."
+      #         # Continue with the rest of the job steps
+      #       fi
       - run:
           name: Increment Version
           command: |
@@ -30,21 +41,8 @@ jobs:
             PATCH=$((PATCH + 1))
             # 构建新版本号
             NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+            export VERSION= $NEW_VERSION
             echo "New Version: $NEW_VERSION"
-            echo "VERSION=$NEW_VERSION" >> $BASH_ENV
-            source $BASH_ENV
-      - run:
-          name: Check for changes
-          command: |
-            CHANGED_FILES=$(git diff --name-only HEAD^ HEAD -- src/ pages/)
-            if [[ -z "$CHANGED_FILES" ]]; then
-              echo "No changes in src/ or pages/ directory. Exiting job."
-              circleci step halt
-            else
-              echo "Changes detected in src/ or pages/ directory. Continuing job."
-              # Continue with the rest of the job steps
-            fi
-
       - run:
           name: Docker login
           command: |
