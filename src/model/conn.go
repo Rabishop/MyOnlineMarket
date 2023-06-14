@@ -7,8 +7,6 @@ import (
 	"gorm.io/gorm/schema"
 )
 
-var err error
-
 func MysqlConn() *gorm.DB {
 
 	Username := "root"
