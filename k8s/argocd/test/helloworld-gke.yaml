@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: helloworld-gke
+spec:
+  containers:
+  - name: helloworld-gke
+    image: us-central1-docker.pkg.dev/my-online-market-388401/hello-repo/helloworld-gke
+  imagePullSecrets:
+  - name: artifact-registry
