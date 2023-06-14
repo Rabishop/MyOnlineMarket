@@ -19,21 +19,6 @@ jobs:
       - setup_remote_docker:
           version: 20.10.7
       - run:
-          name: Increment Version
-          command: |
-            # 使用脚本或命令增加版本号的最后一位
-            # 解析当前版本号的各个部分
-            MAJOR=$(echo $VERSION | awk -F. '{print $1}')
-            MINOR=$(echo $VERSION | awk -F. '{print $2}')
-            PATCH=$(echo $VERSION | awk -F. '{print $3}')
-            # 增加最后一位
-            PATCH=$((PATCH + 1))
-            # 构建新版本号
-            NEW_VERSION="$MAJOR.$MINOR.$PATCH"
-            echo "New Version: $NEW_VERSION"
-            echo "VERSION=$NEW_VERSION" >> $BASH_ENV
-            source $BASH_ENV
-      - run:
           name: Check for changes
           command: |
             CHANGED_FILES=$(git diff --name-only HEAD^ HEAD -- src/ pages/)
@@ -53,7 +38,7 @@ jobs:
       - run:
           name: Create image
           command: |
-            docker build -t 'us-central1-docker.pkg.dev/my-online-market-388401/hello-repo/my-online-market-app:$VERSION' .
+            docker build -t us-central1-docker.pkg.dev/my-online-market-388401/hello-repo/my-online-market-app:process.env.VERSION .
 
       - run:
           name: AR login
@@ -64,7 +49,7 @@ jobs:
       - run:
           name: Upload image
           command: |
-            docker push us-central1-docker.pkg.dev/my-online-market-388401/hello-repo/my-online-market-app:$VERSION
+            docker push us-central1-docker.pkg.dev/my-online-market-388401/hello-repo/my-online-market-app:process.env.VERSION
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
