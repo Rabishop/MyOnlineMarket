@@ -20,5 +20,3 @@ spec:
   defaultBackend:
     service:
       name: my-online-market-app
-      port:
-        number: 80
